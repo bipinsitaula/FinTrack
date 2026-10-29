@@ -24,6 +24,7 @@ Built with WPF, MVVM and .NET 10. Clean light theme with a blue accent, animated
 - Bank accounts, e-wallets (eSewa, Khalti, IME Pay and so on), cash and credit cards, each with a live balance.
 - Transfers between any two accounts. A transfer is stored as two linked transactions, so balances stay exact. Paying a credit card is just a transfer to the card.
 - Net worth (assets minus liabilities) with a 12-month trend chart.
+- Account cards can be given any color from a swatch palette (pencil button on the card, or when adding an account); text switches between white and dark to stay readable.
 
 **Transactions**
 - Add income or expenses with amount, account, category, date, note and an optional receipt image.

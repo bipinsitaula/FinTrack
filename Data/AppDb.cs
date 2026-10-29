@@ -46,7 +46,16 @@ public class AppDb : DbContext
         Directory.CreateDirectory(ReceiptDir);
         using var db = new AppDb();
         db.Database.EnsureCreated();
+        AddMissingColumns(db);
         if (!db.Categories.Any()) Seed(db);
+    }
+
+    /// <summary>EnsureCreated does not alter existing tables, so columns added in later versions are added here.</summary>
+    private static void AddMissingColumns(AppDb db)
+    {
+        var accountColumns = db.Database.SqlQueryRaw<string>("SELECT name AS Value FROM pragma_table_info('Accounts')").ToList();
+        if (!accountColumns.Contains("Color"))
+            db.Database.ExecuteSqlRaw("ALTER TABLE Accounts ADD COLUMN Color TEXT NULL");
     }
 
     private static void Seed(AppDb db)

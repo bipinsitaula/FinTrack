@@ -3,24 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:ui="clr-namespace:FinanceTracker.Controls">
     <UserControl.Resources>
-        <LinearGradientBrush x:Key="SlateGradient" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#0F172A" Offset="0"/><GradientStop Color="#1E293B" Offset="1"/>
-        </LinearGradientBrush>
-        <LinearGradientBrush x:Key="BlueGradient" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#2563EB" Offset="0"/><GradientStop Color="#1E40AF" Offset="1"/>
-        </LinearGradientBrush>
-
-        <!-- Bank = slate gradient, credit card = blue gradient, everything else = white card -->
+        <!-- The card colours come from the account itself (its own colour, or the default for its type). -->
         <Style x:Key="AccountCard" TargetType="Border">
             <Setter Property="Width" Value="310"/>
             <Setter Property="Padding" Value="22"/>
             <Setter Property="Margin" Value="0,0,16,16"/>
             <Setter Property="CornerRadius" Value="16"/>
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+            <Setter Property="Background" Value="{Binding CardBackground}"/>
+            <Setter Property="BorderBrush" Value="{Binding CardBorder}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Effect" Value="{StaticResource CardShadow}"/>
-            <Setter Property="TextElement.Foreground" Value="{StaticResource InkBrush}"/>
+            <Setter Property="TextElement.Foreground" Value="{Binding CardForeground}"/>
             <Setter Property="RenderTransform"><Setter.Value><TranslateTransform/></Setter.Value></Setter>
             <Style.Triggers>
                 <EventTrigger RoutedEvent="FrameworkElement.Loaded">
@@ -39,16 +32,6 @@
                         <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" To="0" Duration="0:0:0.22"/>
                     </Storyboard></BeginStoryboard></Trigger.ExitActions>
                 </Trigger>
-                <DataTrigger Binding="{Binding TypeLabel}" Value="Bank">
-                    <Setter Property="Background" Value="{StaticResource SlateGradient}"/>
-                    <Setter Property="TextElement.Foreground" Value="White"/>
-                    <Setter Property="BorderThickness" Value="0"/>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding TypeLabel}" Value="CreditCard">
-                    <Setter Property="Background" Value="{StaticResource BlueGradient}"/>
-                    <Setter Property="TextElement.Foreground" Value="White"/>
-                    <Setter Property="BorderThickness" Value="0"/>
-                </DataTrigger>
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
@@ -107,15 +90,22 @@
                 <DataTemplate>
                     <Border Style="{StaticResource AccountCard}">
                         <StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,26">
+                            <DockPanel Margin="0,0,0,26">
+                                <Button DockPanel.Dock="Right" Style="{StaticResource IconButton}" Width="34" Height="34" VerticalAlignment="Top" Margin="8,-4,-8,0"
+                                        ToolTip="Edit account and card color" AutomationProperties.Name="Edit account"
+                                        Foreground="{Binding CardForeground}" Opacity="0.8"
+                                        Command="{Binding DataContext.OpenEditAccountCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding}">
+                                    <TextBlock Style="{StaticResource Icon}" Text="&#xE70F;" FontSize="15"/>
+                                </Button>
                                 <Border Width="38" Height="38" CornerRadius="10" Background="#26808080" Margin="0,0,12,0">
                                     <TextBlock Style="{StaticResource Icon}" Text="&#xE825;" HorizontalAlignment="Center"/>
                                 </Border>
                                 <StackPanel VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="15"/>
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="15" TextTrimming="CharacterEllipsis"/>
                                     <TextBlock Text="{Binding TypeLabel}" FontSize="12" Opacity="0.7"/>
                                 </StackPanel>
-                            </StackPanel>
+                            </DockPanel>
                             <TextBlock Text="Balance" FontSize="12" Opacity="0.7"/>
                             <TextBlock Text="{Binding Balance, StringFormat='NPR {0:N2}'}" FontSize="26" FontWeight="Bold"/>
                             <TextBlock Margin="0,6,0,0" FontSize="12" Opacity="0.7">

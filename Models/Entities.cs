@@ -20,9 +20,14 @@ public class Account
     /// <summary>Credit card payment due day of month (1-28); 0 when unused.</summary>
     public int DueDay { get; set; }
     public decimal CreditLimit { get; set; }
+    /// <summary>Optional card colour as a hex string such as #2563EB. Null means the default for the account type.</summary>
+    public string? Color { get; set; }
 
     [NotMapped] public decimal Balance { get; set; }
     [NotMapped] public string TypeLabel => Type.ToString();
+    [NotMapped] public System.Windows.Media.Brush CardBackground => Services.CardColors.Background(this);
+    [NotMapped] public System.Windows.Media.Brush CardForeground => Services.CardColors.Foreground(this);
+    [NotMapped] public System.Windows.Media.Brush CardBorder => Services.CardColors.Border(this);
     public override string ToString() => Name;
 }
 

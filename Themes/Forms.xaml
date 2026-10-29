@@ -56,6 +56,21 @@
         </StackPanel>
     </DataTemplate>
 
+    <!-- Accounts: edit (name, interest, card color) -->
+    <DataTemplate x:Key="EditAccountForm">
+        <StackPanel>
+            <TextBlock Text="Account name" Style="{StaticResource FL}"/>
+            <TextBox Text="{Binding Name}" Style="{StaticResource FB}"/>
+            <TextBlock Text="Interest rate % p.a." Style="{StaticResource FL}"/>
+            <TextBox Text="{Binding Rate}" Style="{StaticResource FB}"/>
+            <DockPanel Margin="0,0,0,6">
+                <Button DockPanel.Dock="Right" Content="Use default" Style="{StaticResource Ghost}" Command="{Binding ResetCardColorCommand}" Padding="10,3" Margin="0" FontSize="12"/>
+                <TextBlock Text="Card color" Style="{StaticResource FL}" Margin="0" VerticalAlignment="Center"/>
+            </DockPanel>
+            <ListBox Style="{StaticResource SwatchList}" ItemsSource="{Binding ColorChoices}" SelectedItem="{Binding CardColor, Mode=TwoWay}"/>
+        </StackPanel>
+    </DataTemplate>
+
     <!-- Income -->
     <DataTemplate x:Key="IncomeForm">
         <StackPanel>

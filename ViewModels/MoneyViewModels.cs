@@ -27,6 +27,10 @@ public partial class AccountsViewModel : PageViewModel
     [ObservableProperty] private decimal _rate;
     [ObservableProperty] private int _dueDay;
     [ObservableProperty] private decimal _limit;
+    [ObservableProperty] private string? _cardColor;
+    private int _editAccountId;
+
+    public IReadOnlyList<string> ColorChoices => Services.CardColors.Palette;
 
     // transfer
     [ObservableProperty] private Account? _from;
@@ -56,9 +60,35 @@ public partial class AccountsViewModel : PageViewModel
     }
 
     [RelayCommand]
+    private void ResetCardColor() => CardColor = null;
+
+    [RelayCommand]
+    private void OpenEditAccount(Account? account)
+    {
+        if (account == null) return;
+        _editAccountId = account.Id;
+        Name = account.Name; Rate = account.InterestRate; CardColor = account.Color;
+        OpenForm("Edit account", "Change the name, interest rate or the color of the card.", "Save changes", "EditAccountForm", SaveAccountEditCommand);
+    }
+
+    [RelayCommand]
+    private void SaveAccountEdit() => Run(() =>
+    {
+        if (string.IsNullOrWhiteSpace(Name)) { Ui.Error("Enter an account name."); return; }
+        using var db = new AppDb();
+        var acct = db.Accounts.Find(_editAccountId)!;
+        acct.Name = Name.Trim();
+        acct.InterestRate = Rate;
+        acct.Color = string.IsNullOrWhiteSpace(CardColor) ? null : CardColor;
+        db.SaveChanges();
+        Status = $"'{acct.Name}' was updated.";
+        Load();
+    });
+
+    [RelayCommand]
     private void OpenAddAccount()
     {
-        Name = ""; Type = AccountType.Bank; Opening = 0; Rate = 0; DueDay = 0; Limit = 0;
+        Name = ""; Type = AccountType.Bank; Opening = 0; Rate = 0; DueDay = 0; Limit = 0; CardColor = null;
         new Views.AddAccountDialog(this).ShowDialog();
     }
 
@@ -74,6 +104,7 @@ public partial class AccountsViewModel : PageViewModel
             {
                 Name = Name.Trim(), Type = Type, OpeningBalance = Type == AccountType.CreditCard ? -Math.Abs(Opening) : Opening,
                 InterestRate = Rate, DueDay = DueDay, CreditLimit = Limit,
+                Color = string.IsNullOrWhiteSpace(CardColor) ? null : CardColor,
             });
             db.SaveChanges();
             Status = $"'{Name.Trim()}' was added.";

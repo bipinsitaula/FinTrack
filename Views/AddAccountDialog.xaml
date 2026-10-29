@@ -39,6 +39,9 @@
                 <TextBlock Text="Interest rate % p.a." Style="{StaticResource Muted}" Margin="0,0,0,4"/>
                 <TextBox Text="{Binding Rate}" Margin="0,0,0,14"/>
 
+                <TextBlock Text="Card color (optional)" Style="{StaticResource Muted}" Margin="0,0,0,6"/>
+                <ListBox Style="{StaticResource SwatchList}" ItemsSource="{Binding ColorChoices}" SelectedItem="{Binding CardColor, Mode=TwoWay}" Margin="0,0,0,6"/>
+
                 <StackPanel>
                     <StackPanel.Style>
                         <Style TargetType="StackPanel">
