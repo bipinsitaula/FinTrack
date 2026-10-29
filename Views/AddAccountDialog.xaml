@@ -4,8 +4,8 @@
         xmlns:ui="clr-namespace:FinanceTracker.Controls"
         Title="Add account">
     <Grid Margin="30">
-        <Border Background="White" CornerRadius="18" Padding="28,24,28,22" Width="460"
-                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Effect="{StaticResource DialogShadow}">
+        <Border TextElement.Foreground="{DynamicResource TextBrush}" Background="{DynamicResource SurfaceBrush}" CornerRadius="18" Padding="28,24,28,22" Width="460"
+                BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Effect="{StaticResource DialogShadow}">
             <StackPanel>
                 <DockPanel Margin="0,0,0,18">
                     <Button DockPanel.Dock="Right" Style="{StaticResource IconButton}" Click="Close_Click" ToolTip="Close" Margin="0">
@@ -53,7 +53,7 @@
                             </Style.Triggers>
                         </Style>
                     </StackPanel.Style>
-                    <Border Background="{StaticResource AccentSoftBrush}" CornerRadius="10" Padding="12,10" Margin="0,0,0,14">
+                    <Border Background="{DynamicResource AccentSoftBrush}" CornerRadius="10" Padding="12,10" Margin="0,0,0,14">
                         <TextBlock Text="For a credit card, enter the amount you currently owe as the opening balance." TextWrapping="Wrap"
                                    Foreground="{StaticResource AccentBrush}" FontSize="12.5"/>
                     </Border>

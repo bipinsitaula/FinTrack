@@ -19,7 +19,7 @@
             <Setter Property="Width" Value="8"/>
             <Setter Property="Height" Value="8"/>
             <Setter Property="Margin" Value="0,6,10,0"/>
-            <Setter Property="Fill" Value="{StaticResource FaintBrush}"/>
+            <Setter Property="Fill" Value="{DynamicResource FaintBrush}"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Level}" Value="Danger">
                     <Setter Property="Fill" Value="{StaticResource DangerBrush}"/>
@@ -31,7 +31,7 @@
         </Style>
         <Style x:Key="Amount" TargetType="TextBlock">
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="{StaticResource InkBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource InkBrush}"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsIncome}" Value="True">
                     <Setter Property="Foreground" Value="{StaticResource GoodBrush}"/>
@@ -53,13 +53,13 @@
             <Border Style="{StaticResource LiftCard}">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,14">
-                        <Border Style="{StaticResource IconBubble}" Background="{StaticResource AccentSoftBrush}">
+                        <Border Style="{StaticResource IconBubble}" Background="{DynamicResource AccentSoftBrush}">
                             <TextBlock Style="{StaticResource Icon}" Text="&#xE825;" Foreground="{StaticResource AccentBrush}" HorizontalAlignment="Center"/>
                         </Border>
                         <TextBlock Text="Net Worth" Style="{StaticResource Muted}" FontSize="14" FontWeight="Medium" VerticalAlignment="Center"/>
                     </StackPanel>
                     <ui:CountUp Value="{Binding NetWorth}" Format="NPR {0:N0}" Style="{StaticResource Big}" Margin="0,0,0,8"/>
-                    <Border Style="{StaticResource Pill}" Background="{StaticResource AccentSoftBrush}">
+                    <Border Style="{StaticResource Pill}" Background="{DynamicResource AccentSoftBrush}">
                         <TextBlock Text="{Binding TotalBalance, StringFormat='Balance {0:N0}'}" Foreground="{StaticResource AccentBrush}" FontSize="12" FontWeight="Medium"/>
                     </Border>
                 </StackPanel>
@@ -68,13 +68,13 @@
             <Border Grid.Column="1" Style="{StaticResource LiftCard}">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,14">
-                        <Border Style="{StaticResource IconBubble}" Background="{StaticResource GoodSoftBrush}">
+                        <Border Style="{StaticResource IconBubble}" Background="{DynamicResource GoodSoftBrush}">
                             <TextBlock Style="{StaticResource Icon}" Text="&#xE74B;" Foreground="{StaticResource GoodBrush}" HorizontalAlignment="Center"/>
                         </Border>
                         <TextBlock Text="Income" Style="{StaticResource Muted}" FontSize="14" FontWeight="Medium" VerticalAlignment="Center"/>
                     </StackPanel>
                     <ui:CountUp Value="{Binding Income}" Format="NPR {0:N0}" Style="{StaticResource Big}" Margin="0,0,0,8"/>
-                    <Border Style="{StaticResource Pill}" Background="{StaticResource GoodSoftBrush}">
+                    <Border Style="{StaticResource Pill}" Background="{DynamicResource GoodSoftBrush}">
                         <TextBlock Text="{Binding MonthLabel}" Foreground="{StaticResource GoodBrush}" FontSize="12" FontWeight="Medium"/>
                     </Border>
                 </StackPanel>
@@ -83,13 +83,13 @@
             <Border Grid.Column="2" Style="{StaticResource LiftCard}">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,14">
-                        <Border Style="{StaticResource IconBubble}" Background="{StaticResource DangerSoftBrush}">
+                        <Border Style="{StaticResource IconBubble}" Background="{DynamicResource DangerSoftBrush}">
                             <TextBlock Style="{StaticResource Icon}" Text="&#xE74A;" Foreground="{StaticResource DangerBrush}" HorizontalAlignment="Center"/>
                         </Border>
                         <TextBlock Text="Expenses" Style="{StaticResource Muted}" FontSize="14" FontWeight="Medium" VerticalAlignment="Center"/>
                     </StackPanel>
                     <ui:CountUp Value="{Binding Expense}" Format="NPR {0:N0}" Style="{StaticResource Big}" Margin="0,0,0,8"/>
-                    <Border Style="{StaticResource Pill}" Background="{StaticResource DangerSoftBrush}">
+                    <Border Style="{StaticResource Pill}" Background="{DynamicResource DangerSoftBrush}">
                         <TextBlock Text="{Binding Saved, StringFormat='Left over {0:N0}'}" Foreground="{StaticResource DangerBrush}" FontSize="12" FontWeight="Medium"/>
                     </Border>
                 </StackPanel>
@@ -98,13 +98,13 @@
             <Border Grid.Column="3" Style="{StaticResource LiftCard}" Margin="0,0,0,16">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,14">
-                        <Border Style="{StaticResource IconBubble}" Background="{StaticResource WarnSoftBrush}">
+                        <Border Style="{StaticResource IconBubble}" Background="{DynamicResource WarnSoftBrush}">
                             <TextBlock Style="{StaticResource Icon}" Text="&#xE8C7;" Foreground="{StaticResource WarnBrush}" HorizontalAlignment="Center"/>
                         </Border>
                         <TextBlock Text="Total Debt" Style="{StaticResource Muted}" FontSize="14" FontWeight="Medium" VerticalAlignment="Center"/>
                     </StackPanel>
                     <ui:CountUp Value="{Binding TotalDebt}" Format="NPR {0:N0}" Style="{StaticResource Big}" Margin="0,0,0,8"/>
-                    <Border Style="{StaticResource Pill}" Background="{StaticResource WarnSoftBrush}">
+                    <Border Style="{StaticResource Pill}" Background="{DynamicResource WarnSoftBrush}">
                         <TextBlock Text="loans, cards, borrowed" Foreground="#B45309" FontSize="12" FontWeight="Medium"/>
                     </Border>
                 </StackPanel>
@@ -125,7 +125,7 @@
                         </StackPanel>
                         <TextBlock Text="Cash Flow" Style="{StaticResource H2}" Margin="0"/>
                     </DockPanel>
-                    <lvc:CartesianChart AnimationsSpeed="0:0:0.9" Series="{Binding CashFlow}" XAxes="{Binding CashX}" YAxes="{Binding CashY}"/>
+                    <lvc:CartesianChart Background="Transparent" AnimationsSpeed="0:0:0.9" Series="{Binding CashFlow}" XAxes="{Binding CashX}" YAxes="{Binding CashY}"/>
                 </DockPanel>
             </Border>
             <Border Grid.Column="1" Style="{StaticResource Card}" Height="360" Margin="0,0,0,16">
@@ -139,8 +139,8 @@
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <Border Style="{StaticResource IconBubble}" Background="{StaticResource Surface2Brush}">
-                                            <TextBlock Style="{StaticResource Icon}" Text="&#xE8AB;" FontSize="15" Foreground="{StaticResource MutedBrush}" HorizontalAlignment="Center"/>
+                                        <Border Style="{StaticResource IconBubble}" Background="{DynamicResource Surface2Brush}">
+                                            <TextBlock Style="{StaticResource Icon}" Text="&#xE8AB;" FontSize="15" Foreground="{DynamicResource MutedBrush}" HorizontalAlignment="Center"/>
                                         </Border>
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                             <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="13" TextTrimming="CharacterEllipsis"/>
@@ -175,13 +175,13 @@
                             </Style>
                         </TextBlock.Style>
                     </TextBlock>
-                    <lvc:PieChart AnimationsSpeed="0:0:0.9" Series="{Binding Donut}" LegendPosition="Right"/>
+                    <lvc:PieChart Background="Transparent" AnimationsSpeed="0:0:0.9" Series="{Binding Donut}" LegendPosition="Right"/>
                 </DockPanel>
             </Border>
             <Border Grid.Column="1" Style="{StaticResource Card}" Height="320" Margin="0,0,0,16">
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Top" Text="Net worth trend (12 months)" Style="{StaticResource H2}"/>
-                    <lvc:CartesianChart AnimationsSpeed="0:0:0.9" Series="{Binding Trend}" XAxes="{Binding TrendX}" YAxes="{Binding TrendY}"/>
+                    <lvc:CartesianChart Background="Transparent" AnimationsSpeed="0:0:0.9" Series="{Binding Trend}" XAxes="{Binding TrendX}" YAxes="{Binding TrendY}"/>
                 </DockPanel>
             </Border>
         </Grid>
@@ -202,9 +202,9 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <Border Width="46" Height="46" CornerRadius="12" Background="{StaticResource Surface2Brush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="0,0,12,0">
+                                    <Border Width="46" Height="46" CornerRadius="12" Background="{DynamicResource Surface2Brush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Margin="0,0,12,0">
                                         <StackPanel VerticalAlignment="Center">
-                                            <TextBlock Text="{Binding Date, Converter={StaticResource DateFmt}, ConverterParameter=month}" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center" Foreground="{StaticResource MutedBrush}"/>
+                                            <TextBlock Text="{Binding Date, Converter={StaticResource DateFmt}, ConverterParameter=month}" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center" Foreground="{DynamicResource MutedBrush}"/>
                                             <TextBlock Text="{Binding Date, Converter={StaticResource DateFmt}, ConverterParameter=day}" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center"/>
                                         </StackPanel>
                                     </Border>
@@ -240,7 +240,7 @@
                                 <StackPanel Margin="0,0,0,14">
                                     <DockPanel Margin="0,0,0,6">
                                         <TextBlock DockPanel.Dock="Right" Style="{StaticResource Muted}">
-                                            <Run Text="{Binding Spent, Mode=OneWay, StringFormat='{}{0:N0}'}" FontWeight="Bold" Foreground="{StaticResource InkBrush}"/><Run Text=" / "/><Run Text="{Binding Limit, Mode=OneWay, StringFormat='{}{0:N0}'}"/>
+                                            <Run Text="{Binding Spent, Mode=OneWay, StringFormat='{}{0:N0}'}" FontWeight="Bold" Foreground="{DynamicResource InkBrush}"/><Run Text=" / "/><Run Text="{Binding Limit, Mode=OneWay, StringFormat='{}{0:N0}'}"/>
                                         </TextBlock>
                                         <TextBlock Text="{Binding Category}" FontWeight="Medium"/>
                                     </DockPanel>

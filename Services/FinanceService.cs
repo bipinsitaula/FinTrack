@@ -117,6 +117,28 @@ public static class FinanceService
         return result;
     }
 
+    /// <summary>Assets and liabilities at the end of each of the last N months. Account balances are historical; the rest is held at today's value.</summary>
+    public static List<(decimal Assets, decimal Liabilities)> AccountTrends(AppDb db, int months = 6)
+    {
+        var accounts = db.Accounts.AsNoTracking().ToList();
+        var txs = db.Transactions.AsNoTracking().ToList();
+        decimal Balance(Account a, DateTime upTo) => a.OpeningBalance + txs.Where(t => t.AccountId == a.Id && t.Date.Date <= upTo.Date).Sum(t => t.Signed);
+
+        var now = NetWorth(db);
+        var todayBalances = accounts.Select(a => Balance(a, DateTime.Today)).ToList();
+        var assetsConst = now.Assets - todayBalances.Where(b => b > 0).Sum();
+        var liabilitiesConst = now.Liabilities + todayBalances.Where(b => b < 0).Sum();
+
+        var result = new List<(decimal, decimal)>();
+        for (var i = months - 1; i >= 0; i--)
+        {
+            var end = i == 0 ? DateTime.Today : DateDisplay.MonthRange(DateDisplay.AddMonths(DateTime.Today, -i)).End;
+            var balances = accounts.Select(a => Balance(a, end)).ToList();
+            result.Add((balances.Where(b => b > 0).Sum() + assetsConst, -balances.Where(b => b < 0).Sum() + liabilitiesConst));
+        }
+        return result;
+    }
+
     // ---------- monthly numbers ----------
     private static IEnumerable<Transaction> InMonth(IEnumerable<Transaction> txs, DateTime month) =>
         txs.Where(t => DateDisplay.SameMonth(month, t.Date));

@@ -18,6 +18,8 @@ public static class CardColors
     private static string? DefaultFor(AccountType type) => type switch
     {
         AccountType.Bank => "#0F172A",
+        AccountType.Savings => "#0D9488",
+        AccountType.Current => "#4F46E5",
         AccountType.CreditCard => "#2563EB",
         _ => null,
     };
@@ -52,4 +54,14 @@ public static class CardColors
 
     public static Brush Border(Account a) =>
         Parse(Effective(a)) == null ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E2E8F0")) : Brushes.Transparent;
+
+    /// <summary>Translucent fill for the icon circle and badge: frosted white on colored cards, light grey on white ones.</summary>
+    public static Brush Chip(Account a)
+    {
+        var brush = Parse(Effective(a)) == null
+            ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F1F5F9"))
+            : new SolidColorBrush(Color.FromArgb(0x38, 0xFF, 0xFF, 0xFF));
+        brush.Freeze();
+        return brush;
+    }
 }

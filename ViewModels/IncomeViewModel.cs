@@ -17,6 +17,9 @@ public partial class IncomeViewModel : PageViewModel
     [ObservableProperty] private decimal _thisMonth;
     [ObservableProperty] private decimal _lastMonth;
     [ObservableProperty] private decimal _total;
+    [ObservableProperty] private IReadOnlyList<double> _monthTrend = new double[] { 0, 0 };
+    [ObservableProperty] private IReadOnlyList<double> _lastTrend = new double[] { 0, 0 };
+    [ObservableProperty] private IReadOnlyList<double> _totalTrend = new double[] { 0, 0 };
 
     // add-income form
     [ObservableProperty] private decimal _amount;
@@ -42,6 +45,13 @@ public partial class IncomeViewModel : PageViewModel
         ThisMonth = FinanceService.MonthTotals(db, DateTime.Today).Income;
         LastMonth = FinanceService.MonthTotals(db, DateDisplay.AddMonths(DateTime.Today, -1)).Income;
         Total = Items.Sum(t => t.Amount);
+
+        // six months of income for the sparklines, oldest first
+        var months = Enumerable.Range(0, 6).Select(i => (double)FinanceService.MonthTotals(db, DateDisplay.AddMonths(DateTime.Today, i - 5)).Income).ToList();
+        MonthTrend = months;
+        LastTrend = months.Take(5).ToList();
+        var running = (double)Total - months.Sum();
+        TotalTrend = months.Select(m => running += m).ToList();
     }
 
     private Category? DefaultSource() => Categories.FirstOrDefault(c => c.Name == "Salary") ?? Categories.FirstOrDefault();
@@ -77,6 +87,14 @@ public partial class IncomeViewModel : PageViewModel
         Load();
         Status = $"Added NPR {added:N2} to {where}.";
     });
+
+    [RelayCommand]
+    private void DeleteIncome(Transaction? t)
+    {
+        if (t == null) return;
+        Selected = t;
+        DeleteSelected();
+    }
 
     [RelayCommand]
     private void DeleteSelected() => Run(() =>

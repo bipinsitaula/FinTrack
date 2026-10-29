@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinanceTracker.Models;
 
-public enum AccountType { Bank, EWallet, Cash, CreditCard }
+public enum AccountType { Bank, EWallet, Cash, CreditCard, Savings, Current }
 public enum TxKind { Income, Expense, TransferIn, TransferOut }
 public enum LoanKind { Emi, Fixed }
 public enum DebtDirection { Gave, Took }
@@ -28,6 +28,19 @@ public class Account
     [NotMapped] public System.Windows.Media.Brush CardBackground => Services.CardColors.Background(this);
     [NotMapped] public System.Windows.Media.Brush CardForeground => Services.CardColors.Foreground(this);
     [NotMapped] public System.Windows.Media.Brush CardBorder => Services.CardColors.Border(this);
+    [NotMapped] public System.Windows.Media.Brush CardChip => Services.CardColors.Chip(this);
+    /// <summary>Set by the Accounts page: this account's share of total assets, or "Owed" for negative balances.</summary>
+    [NotMapped] public string ShareLabel { get; set; } = "";
+    [NotMapped] public string KindLabel => Type switch
+    {
+        AccountType.Bank => "Bank account",
+        AccountType.Savings => "Savings account",
+        AccountType.Current => "Current account",
+        AccountType.EWallet => "E-wallet",
+        AccountType.Cash => "Cash",
+        AccountType.CreditCard => "Credit card",
+        _ => "",
+    };
     public override string ToString() => Name;
 }
 
@@ -61,6 +74,8 @@ public class Transaction
 
     [NotMapped] public decimal Signed => Kind is TxKind.Income or TxKind.TransferIn ? Amount : -Amount;
     [NotMapped] public string AccountName => Account?.Name ?? "";
+    [NotMapped] public string AccountKind => Account?.KindLabel ?? "";
+    [NotMapped] public bool HasReceipt => !string.IsNullOrWhiteSpace(ReceiptPath);
     [NotMapped] public string CategoryName => Category?.Name ?? (Kind is TxKind.TransferIn or TxKind.TransferOut ? "Transfer" : "");
 }
 

@@ -14,7 +14,8 @@ public record RecentItem(string Title, string Sub, string AmountText, bool IsInc
 public class DashboardViewModel
 {
     private static readonly string[] Palette = { "#3B82F6", "#10B981", "#F59E0B", "#F43F5E", "#8B5CF6", "#06B6D4", "#F97316", "#64748B", "#14B8A6", "#EC4899" };
-    private static readonly SKColor Muted = SKColor.Parse("#64748B");
+    private static SKColor Muted => SKColor.Parse(ThemeManager.IsDark ? "#9AA9C4" : "#64748B");
+    private static SKColor Grid => SKColor.Parse(ThemeManager.IsDark ? "#243352" : "#E2E8F0");
 
     public decimal NetWorth { get; }
     public decimal TotalBalance { get; }
@@ -83,7 +84,7 @@ public class DashboardViewModel
             new ColumnSeries<double> { Name = "Expenses", Values = totals.Select(t => (double)t.Expense).ToArray(), Fill = new SolidColorPaint(SKColor.Parse("#FB7185")), MaxBarWidth = 16, Rx = 4, Ry = 4 },
         };
         CashX = new[] { new Axis { Labels = months.Select(m => DateDisplay.Month(m)).ToArray(), LabelsPaint = new SolidColorPaint(Muted), TextSize = 12 } };
-        CashY = new[] { new Axis { LabelsPaint = new SolidColorPaint(Muted), TextSize = 12, SeparatorsPaint = new SolidColorPaint(SKColor.Parse("#E2E8F0"), 1), Labeler = v => v.ToString("N0"), MinLimit = 0 } };
+        CashY = new[] { new Axis { LabelsPaint = new SolidColorPaint(Muted), TextSize = 12, SeparatorsPaint = new SolidColorPaint(Grid, 1), Labeler = v => v.ToString("N0"), MinLimit = 0 } };
 
         var trend = FinanceService.NetWorthTrend(db, 12);
         Trend = new ISeries[]
@@ -94,7 +95,7 @@ public class DashboardViewModel
                 Stroke = new SolidColorPaint(SKColor.Parse("#2563EB"), 3),
                 Fill = new SolidColorPaint(SKColor.Parse("#2563EB").WithAlpha(36)),
                 GeometryStroke = new SolidColorPaint(SKColor.Parse("#2563EB"), 3),
-                GeometryFill = new SolidColorPaint(SKColor.Parse("#FFFFFF")),
+                GeometryFill = new SolidColorPaint(SKColor.Parse(ThemeManager.IsDark ? "#111B30" : "#FFFFFF")),
                 GeometrySize = 8,
                 Name = "Net worth",
             }
@@ -105,7 +106,7 @@ public class DashboardViewModel
             new Axis
             {
                 LabelsPaint = new SolidColorPaint(Muted), TextSize = 12,
-                SeparatorsPaint = new SolidColorPaint(SKColor.Parse("#E2E8F0"), 1),
+                SeparatorsPaint = new SolidColorPaint(Grid, 1),
                 Labeler = v => v.ToString("N0"),
             }
         };

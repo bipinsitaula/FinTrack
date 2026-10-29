@@ -10,19 +10,57 @@ using Microsoft.Win32;
 namespace FinanceTracker.ViewModels;
 
 // ===================== Accounts =====================
+/// <summary>A KPI card's trend line and month-on-month change.</summary>
+public record Kpi(IReadOnlyList<double> Trend, string ChangeText, string ChangeColor);
+
+/// <summary>One row in the Accounts filter panel. Selecting it tells the page which filter is now active.</summary>
+public partial class FilterOption : ObservableObject
+{
+    private readonly Action<FilterOption> _picked;
+    public FilterOption(string key, string label, Action<FilterOption> picked) { Key = key; Label = label; _picked = picked; }
+    public string Key { get; }
+    public string Label { get; }
+    [ObservableProperty] private int _count;
+    [ObservableProperty] private bool _isSelected;
+    partial void OnIsSelectedChanged(bool value) { if (value) _picked(this); }
+}
+
 public partial class AccountsViewModel : PageViewModel
 {
-    public Array AccountTypes { get; } = Enum.GetValues<AccountType>();
+    public AccountType[] AccountTypes { get; } = { AccountType.Savings, AccountType.Current, AccountType.Bank, AccountType.EWallet, AccountType.Cash, AccountType.CreditCard };
 
     [ObservableProperty] private List<Account> _accounts = new();
     [ObservableProperty] private Account? _selected;
     [ObservableProperty] private decimal _assets;
     [ObservableProperty] private decimal _liabilities;
     [ObservableProperty] private decimal _netWorth;
+    [ObservableProperty] private Kpi? _assetsKpi;
+    [ObservableProperty] private Kpi? _liabilitiesKpi;
+    [ObservableProperty] private Kpi? _netKpi;
+
+    // view toggle and sorting
+    [NotifyPropertyChangedFor(nameof(IsListView))]
+    [ObservableProperty] private bool _isGridView = true;
+    public bool IsListView
+    {
+        get => !IsGridView;
+        set => IsGridView = !value;
+    }
+    // left-hand filter panel
+    private List<Account> _all = new();
+    public List<FilterOption> TypeFilters { get; }
+    public List<FilterOption> BalanceFilters { get; }
+    private string _typeKey = "All";
+    private string _balanceKey = "Any";
+    [ObservableProperty] private string _showing = "";
+    public bool HasFilters => _typeKey != "All" || _balanceKey != "Any";
+
+    public string[] SortOptions { get; } = { "Balance (High → Low)", "Balance (Low → High)", "Name (A → Z)", "Type" };
+    [ObservableProperty] private string _selectedSort = "Balance (High → Low)";
 
     // new account
     [ObservableProperty] private string _name = "";
-    [ObservableProperty] private AccountType _type = AccountType.Bank;
+    [ObservableProperty] private AccountType _type = AccountType.Savings;
     [ObservableProperty] private decimal _opening;
     [ObservableProperty] private decimal _rate;
     [ObservableProperty] private int _dueDay;
@@ -39,22 +77,103 @@ public partial class AccountsViewModel : PageViewModel
     [ObservableProperty] private DateTime _date = DateTime.Today;
     [ObservableProperty] private string _note = "";
 
-    public AccountsViewModel() => Load();
+    public AccountsViewModel()
+    {
+        TypeFilters = new()
+        {
+            new("All", "All accounts", PickType) { IsSelected = true },
+            new("Savings", "Savings", PickType), new("Current", "Current", PickType), new("Bank", "Other bank", PickType),
+            new("EWallet", "E-wallets", PickType), new("Cash", "Cash", PickType), new("CreditCard", "Credit cards", PickType),
+        };
+        BalanceFilters = new()
+        {
+            new("Any", "Any balance", PickBalance) { IsSelected = true },
+            new("Positive", "Has money", PickBalance), new("Owed", "Owed", PickBalance), new("Empty", "Empty", PickBalance),
+        };
+        Load();
+    }
+
+    private void PickType(FilterOption o) { _typeKey = o.Key; Refilter(); }
+    private void PickBalance(FilterOption o) { _balanceKey = o.Key; Refilter(); }
+
+    [RelayCommand]
+    private void ClearFilters()
+    {
+        TypeFilters[0].IsSelected = true;
+        BalanceFilters[0].IsSelected = true;
+    }
+
+    private void Refilter()
+    {
+        OnPropertyChanged(nameof(HasFilters));
+        if (_all.Count == 0 && Accounts.Count == 0) return;
+        var shown = _all.Where(a => (_typeKey == "All" || a.Type.ToString() == _typeKey) && _balanceKey switch
+        {
+            "Positive" => a.Balance > 0,
+            "Owed" => a.Balance < 0,
+            "Empty" => a.Balance == 0,
+            _ => true,
+        }).ToList();
+        Accounts = Sorted(shown);
+        Showing = shown.Count == _all.Count ? $"{_all.Count} accounts" : $"Showing {shown.Count} of {_all.Count}";
+    }
 
     private void Load()
     {
         using var db = new AppDb();
-        Accounts = FinanceService.LoadAccounts(db);
+        var list = FinanceService.LoadAccounts(db);
+        var totalAssets = list.Where(a => a.Balance > 0).Sum(a => a.Balance);
+        foreach (var a in list)
+            a.ShareLabel = a.Balance < 0 ? "Owed" : a.Balance == 0 || totalAssets <= 0 ? "Empty" : $"{a.Balance / totalAssets * 100:N0}% of assets";
+        _all = list;
+        foreach (var f in TypeFilters) f.Count = f.Key == "All" ? list.Count : list.Count(a => a.Type.ToString() == f.Key);
+        foreach (var f in BalanceFilters) f.Count = f.Key switch
+        {
+            "Positive" => list.Count(a => a.Balance > 0), "Owed" => list.Count(a => a.Balance < 0),
+            "Empty" => list.Count(a => a.Balance == 0), _ => list.Count,
+        };
+        Refilter();
+
         var w = FinanceService.NetWorth(db);
         Assets = w.Assets; Liabilities = w.Liabilities; NetWorth = w.NetWorth;
+
+        var trend = FinanceService.AccountTrends(db, 6);
+        AssetsKpi = MakeKpi(trend.Select(t => (double)t.Assets).ToList(), upIsGood: true);
+        LiabilitiesKpi = MakeKpi(trend.Select(t => (double)t.Liabilities).ToList(), upIsGood: false);
+        NetKpi = MakeKpi(trend.Select(t => (double)(t.Assets - t.Liabilities)).ToList(), upIsGood: true);
     }
+
+    private static Kpi MakeKpi(List<double> trend, bool upIsGood)
+    {
+        var cur = trend.Count > 0 ? trend[^1] : 0;
+        var prev = trend.Count > 1 ? trend[^2] : cur;
+        var pct = Math.Abs(prev) < 0.005 ? 0 : (cur - prev) / Math.Abs(prev) * 100;
+        var up = pct > 0.05;
+        var down = pct < -0.05;
+        var arrow = up ? "↑" : down ? "↓" : "→";
+        var good = (up && upIsGood) || (down && !upIsGood);
+        var bad = (up && !upIsGood) || (down && upIsGood);
+        return new Kpi(trend, $"{arrow} {Math.Abs(pct):N1}%", good ? "#059669" : bad ? "#E11D48" : "#64748B");
+    }
+
+    private List<Account> Sorted(List<Account> list) => SelectedSort switch
+    {
+        "Balance (Low → High)" => list.OrderBy(a => a.Balance).ToList(),
+        "Name (A → Z)" => list.OrderBy(a => a.Name, StringComparer.CurrentCultureIgnoreCase).ToList(),
+        "Type" => list.OrderBy(a => a.Type).ThenBy(a => a.Name, StringComparer.CurrentCultureIgnoreCase).ToList(),
+        _ => list.OrderByDescending(a => a.Balance).ToList(),
+    };
+
+    partial void OnSelectedSortChanged(string value) => Accounts = Sorted(Accounts);
+
+
 
     /// <summary>Opens the Income form with the selected account chosen, then refreshes the balances.</summary>
     [RelayCommand]
-    private void AddMoney()
+    private void AddMoney(Account? account)
     {
         var income = new IncomeViewModel();
-        income.Preselect(Selected?.Id);
+        income.Preselect((account ?? Selected)?.Id);
         income.OpenAddCommand.Execute(null);
         Load();
     }
@@ -88,7 +207,7 @@ public partial class AccountsViewModel : PageViewModel
     [RelayCommand]
     private void OpenAddAccount()
     {
-        Name = ""; Type = AccountType.Bank; Opening = 0; Rate = 0; DueDay = 0; Limit = 0; CardColor = null;
+        Name = ""; Type = AccountType.Savings; Opening = 0; Rate = 0; DueDay = 0; Limit = 0; CardColor = null;
         new Views.AddAccountDialog(this).ShowDialog();
     }
 
@@ -115,13 +234,15 @@ public partial class AccountsViewModel : PageViewModel
     }
 
     [RelayCommand]
-    private void DeleteAccount() => Run(() =>
+    private void DeleteAccount(Account? account) => Run(() =>
     {
-        if (Selected == null) return;
-        if (!Ui.Confirm($"Delete '{Selected.Name}' and all of its transactions?")) return;
+        var target = account ?? Selected;
+        if (target == null) { Ui.Error("Select an account card first."); return; }
+        if (!Ui.Confirm($"Delete '{target.Name}' and all of its transactions?")) return;
         using var db = new AppDb();
-        db.Accounts.Remove(db.Accounts.Find(Selected.Id)!);
+        db.Accounts.Remove(db.Accounts.Find(target.Id)!);
         db.SaveChanges();
+        Selected = null;
         Load();
     });
 
@@ -172,6 +293,8 @@ public partial class TransactionsViewModel : PageViewModel
     [ObservableProperty] private Transaction? _selected;
     [ObservableProperty] private decimal _filteredIncome;
     [ObservableProperty] private decimal _filteredExpense;
+    [ObservableProperty] private int _txCount;
+    [ObservableProperty] private decimal _netBalance;
     [ObservableProperty] private int _activeFilters;
 
     // filters
@@ -278,6 +401,8 @@ public partial class TransactionsViewModel : PageViewModel
         Items = list;
         FilteredIncome = list.Where(t => t.Kind == TxKind.Income).Sum(t => t.Amount);
         FilteredExpense = list.Where(t => t.Kind == TxKind.Expense).Sum(t => t.Amount);
+        TxCount = list.Count;
+        NetBalance = FilteredIncome - FilteredExpense;
     }
 
     [RelayCommand]
@@ -327,6 +452,22 @@ public partial class TransactionsViewModel : PageViewModel
         LoadLookups(); Refresh();
         Status = $"Split bill saved ({SplitTotal:N2}).";
     });
+
+    [RelayCommand]
+    private void OpenReceipt(Transaction? t)
+    {
+        if (t == null || !t.HasReceipt) return;
+        try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(t.ReceiptPath!) { UseShellExecute = true }); }
+        catch (Exception ex) { Ui.Error("Could not open the receipt: " + ex.Message); }
+    }
+
+    [RelayCommand]
+    private void DeleteTransaction(Transaction? t)
+    {
+        if (t == null) return;
+        Selected = t;
+        DeleteSelected();
+    }
 
     [RelayCommand]
     private void DeleteSelected() => Run(() =>

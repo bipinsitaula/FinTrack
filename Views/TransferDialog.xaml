@@ -4,8 +4,8 @@
         xmlns:ui="clr-namespace:FinanceTracker.Controls"
         Title="Transfer money">
     <Grid Margin="30">
-        <Border Background="White" CornerRadius="18" Padding="28,24,28,22" Width="460"
-                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Effect="{StaticResource DialogShadow}">
+        <Border TextElement.Foreground="{DynamicResource TextBrush}" Background="{DynamicResource SurfaceBrush}" CornerRadius="18" Padding="28,24,28,22" Width="460"
+                BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Effect="{StaticResource DialogShadow}">
             <StackPanel>
                 <DockPanel Margin="0,0,0,18">
                     <Button DockPanel.Dock="Right" Style="{StaticResource IconButton}" Click="Close_Click" ToolTip="Close" Margin="0">

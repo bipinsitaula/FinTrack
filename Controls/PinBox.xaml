@@ -12,7 +12,7 @@
                  TextChanged="Plain_TextChanged"/>
         <ToggleButton x:Name="Eye" HorizontalAlignment="Right" Width="42" Focusable="False" Cursor="Hand"
                       ToolTip="Show or hide the PIN" AutomationProperties.Name="Show PIN" Checked="Eye_Click" Unchecked="Eye_Click"
-                      Foreground="{StaticResource MutedBrush}">
+                      Foreground="{DynamicResource MutedBrush}">
             <ToggleButton.Template>
                 <ControlTemplate TargetType="ToggleButton">
                     <Border Background="Transparent" CornerRadius="10">
@@ -29,7 +29,7 @@
                             <Setter TargetName="slash" Property="Stroke" Value="{StaticResource AccentBrush}"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="glyph" Property="Foreground" Value="{StaticResource InkBrush}"/>
+                            <Setter TargetName="glyph" Property="Foreground" Value="{DynamicResource InkBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

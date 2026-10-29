@@ -4,7 +4,7 @@
         xmlns:ui="clr-namespace:FinanceTracker.Controls"
         Title="FinTrack" Icon="/Assets/app.ico" Width="460" SizeToContent="Height" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid>
-        <Border Background="White" CornerRadius="20" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+        <Border TextElement.Foreground="{DynamicResource TextBrush}" Background="{DynamicResource SurfaceBrush}" CornerRadius="20" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
                 Margin="28" Padding="36,34" Effect="{StaticResource CardShadow}" RenderTransformOrigin="0.5,0.5">
             <Border.RenderTransform>
                 <TransformGroup>

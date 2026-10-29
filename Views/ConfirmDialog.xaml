@@ -4,8 +4,8 @@
         xmlns:ui="clr-namespace:FinanceTracker.Controls"
         Title="Confirm">
     <Grid Margin="30">
-        <Border Background="White" CornerRadius="18" Padding="28,26,28,22" MinWidth="400" MaxWidth="480"
-                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Effect="{StaticResource DialogShadow}">
+        <Border TextElement.Foreground="{DynamicResource TextBrush}" Background="{DynamicResource SurfaceBrush}" CornerRadius="18" Padding="28,26,28,22" MinWidth="400" MaxWidth="480"
+                BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Effect="{StaticResource DialogShadow}">
             <StackPanel>
                 <Border x:Name="IconBubble" Width="54" Height="54" CornerRadius="27" HorizontalAlignment="Left">
                     <TextBlock x:Name="IconGlyph" Style="{StaticResource Icon}" FontSize="24" HorizontalAlignment="Center"/>

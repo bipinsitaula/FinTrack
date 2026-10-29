@@ -92,6 +92,15 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private string _searchText = "";
     [ObservableProperty] private bool _hasAlerts;
     [ObservableProperty] private string _calendar = "AD";
+    [ObservableProperty] private bool _isDark = Services.ThemeManager.IsDark;
+
+    [RelayCommand]
+    private void ToggleTheme()
+    {
+        Services.ThemeManager.Set(!Services.ThemeManager.IsDark);
+        IsDark = Services.ThemeManager.IsDark;
+        Navigate(Page);   // charts take their colors when built, so rebuild the current page
+    }
 
     public string DisplayName => string.IsNullOrWhiteSpace(UserName) ? "My Finances" : UserName.Trim();
     public string Initial => string.IsNullOrWhiteSpace(UserName) ? "F" : UserName.Trim()[..1].ToUpperInvariant();
@@ -181,4 +190,5 @@ public partial class MainViewModel : ObservableObject
         else Application.Current.Shutdown();
     }
     [RelayCommand] private void ShowAlerts() => Page = "Dashboard";
+    [RelayCommand] private void ShowProfile() => Page = "Settings";
 }

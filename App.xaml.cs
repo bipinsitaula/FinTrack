@@ -27,6 +27,7 @@ public partial class App : Application
         {
             LiveCharts.Configure(c => c.AddSkiaSharp().AddDefaultMappers().AddLightTheme());
             AppDb.Initialize();
+            ThemeManager.Load();
             using (var db = new AppDb()) FinanceService.PostRecurringIncome(db);
         }
         catch (Exception ex)

@@ -14,7 +14,7 @@
             <vm:RowNumberConverter x:Key="RowNumber"/>
 
             <DataTemplate x:Key="SnCell">
-                <TextBlock Foreground="{StaticResource FaintBrush}" FontWeight="Medium" FontSize="12.5"
+                <TextBlock Foreground="{DynamicResource FaintBrush}" FontWeight="Medium" FontSize="12.5"
                            Text="{Binding Path=(ItemsControl.AlternationIndex), RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource RowNumber}}"/>
             </DataTemplate>
 
