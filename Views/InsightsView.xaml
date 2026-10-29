@@ -1,0 +1,96 @@
+<UserControl x:Class="FinanceTracker.Views.InsightsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel>
+
+        <Border Style="{StaticResource Card}">
+            <StackPanel>
+                <TextBlock Text="Financial health score" Style="{StaticResource H2}"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding Health.Total}" FontSize="48" FontWeight="Black" Foreground="{StaticResource AccentBrush}"/>
+                    <TextBlock Text=" / 100" Style="{StaticResource Muted}" VerticalAlignment="Bottom" Margin="0,0,0,12"/>
+                </StackPanel>
+                <TextBlock Text="{Binding Advice}" Margin="0,0,0,12"/>
+
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="230"/><ColumnDefinition/><ColumnDefinition Width="70"/></Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="Savings rate"/>
+                        <TextBlock Text="{Binding Health.SavingsRate, StringFormat='{}{0:P0} (target 20%)'}" Style="{StaticResource Muted}"/>
+                    </StackPanel>
+                    <ProgressBar Grid.Column="1" Maximum="25" Value="{Binding Health.Savings, Mode=OneWay}"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Health.Savings, StringFormat='{}{0}/25'}" HorizontalAlignment="Right"/>
+                </Grid>
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="230"/><ColumnDefinition/><ColumnDefinition Width="70"/></Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="Debt-to-income"/>
+                        <TextBlock Text="{Binding Health.DebtToIncome, StringFormat='{}{0:P0} of income goes to EMIs'}" Style="{StaticResource Muted}"/>
+                    </StackPanel>
+                    <ProgressBar Grid.Column="1" Maximum="25" Value="{Binding Health.Debt, Mode=OneWay}"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Health.Debt, StringFormat='{}{0}/25'}" HorizontalAlignment="Right"/>
+                </Grid>
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="230"/><ColumnDefinition/><ColumnDefinition Width="70"/></Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="Emergency fund"/>
+                        <TextBlock Text="{Binding Health.EmergencyMonths, StringFormat='{}{0:N1} months of expenses (target 6)'}" Style="{StaticResource Muted}"/>
+                    </StackPanel>
+                    <ProgressBar Grid.Column="1" Maximum="25" Value="{Binding Health.Emergency, Mode=OneWay}"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Health.Emergency, StringFormat='{}{0}/25'}" HorizontalAlignment="Right"/>
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="230"/><ColumnDefinition/><ColumnDefinition Width="70"/></Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="Budget adherence"/>
+                        <TextBlock Text="{Binding Health.BudgetAdherence, StringFormat='{}{0:P0} of budgets on track'}" Style="{StaticResource Muted}"/>
+                    </StackPanel>
+                    <ProgressBar Grid.Column="1" Maximum="25" Value="{Binding Health.Budget, Mode=OneWay}"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Health.Budget, StringFormat='{}{0}/25'}" HorizontalAlignment="Right"/>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <Border Style="{StaticResource Card}">
+            <StackPanel>
+                <TextBlock Text="Cash flow forecast (next 3 months)" Style="{StaticResource H2}"/>
+                <TextBlock Text="Starts from your current balances and applies recurring income, EMIs and subscriptions. Everyday spending is not included." Style="{StaticResource Muted}" TextWrapping="Wrap" Margin="0,0,0,8"/>
+                <DataGrid ItemsSource="{Binding Forecast}">
+                    <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="SN" Width="64" CanUserSort="False" CellTemplate="{StaticResource SnCell}"/>
+                        <DataGridTextColumn Header="Month" Binding="{Binding Month, StringFormat='MMM yyyy'}" Width="*"/>
+                        <DataGridTextColumn Header="Recurring income" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Income, StringFormat='{}{0:N0}'}" Width="*"/>
+                        <DataGridTextColumn Header="EMIs" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Emis, StringFormat='{}{0:N0}'}" Width="*"/>
+                        <DataGridTextColumn Header="Subscriptions" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Subscriptions, StringFormat='{}{0:N0}'}" Width="*"/>
+                        <DataGridTextColumn Header="Projected balance" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Closing, StringFormat='{}{0:N0}'}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+        </Border>
+
+        <Border Style="{StaticResource Card}">
+            <StackPanel>
+                <TextBlock Text="Spending anomalies" Style="{StaticResource H2}"/>
+                <ItemsControl ItemsSource="{Binding Anomalies}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" TextWrapping="Wrap" Margin="0,0,0,6" Foreground="{StaticResource WarnBrush}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <TextBlock Text="No unusual spending this month. A category is flagged when it is 50% above your 3-month average." TextWrapping="Wrap">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource Muted}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Anomalies.Count}" Value="0">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,76 @@
+<ui:DialogBase x:Class="FinanceTracker.Views.AddAccountDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="clr-namespace:FinanceTracker.Controls"
+        Title="Add account">
+    <Grid Margin="30">
+        <Border Background="White" CornerRadius="18" Padding="28,24,28,22" Width="460"
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Effect="{StaticResource DialogShadow}">
+            <StackPanel>
+                <DockPanel Margin="0,0,0,18">
+                    <Button DockPanel.Dock="Right" Style="{StaticResource IconButton}" Click="Close_Click" ToolTip="Close" Margin="0">
+                        <TextBlock Style="{StaticResource Icon}" Text="&#xE711;" FontSize="14"/>
+                    </Button>
+                    <StackPanel>
+                        <TextBlock Text="Add account" FontSize="20" FontWeight="Bold"/>
+                        <TextBlock Text="Bank, e-wallet, cash or credit card." Style="{StaticResource Muted}" FontSize="13" Margin="0,2,0,0"/>
+                    </StackPanel>
+                </DockPanel>
+
+                <TextBlock Text="Account name" Style="{StaticResource Muted}" Margin="0,0,0,4"/>
+                <TextBox x:Name="NameBox" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,14"/>
+
+                <TextBlock Text="Type" Style="{StaticResource Muted}" Margin="0,0,0,4"/>
+                <ComboBox ItemsSource="{Binding AccountTypes}" SelectedItem="{Binding Type}" Margin="0,0,0,14"/>
+
+                <TextBlock Text="Opening balance" Margin="0,0,0,4">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource Muted}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Type}" Value="CreditCard">
+                                    <Setter Property="Text" Value="Amount you currently owe"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                <TextBox Text="{Binding Opening}" Margin="0,0,0,14"/>
+
+                <TextBlock Text="Interest rate % p.a." Style="{StaticResource Muted}" Margin="0,0,0,4"/>
+                <TextBox Text="{Binding Rate}" Margin="0,0,0,14"/>
+
+                <StackPanel>
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Type}" Value="CreditCard">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+                    <Border Background="{StaticResource AccentSoftBrush}" CornerRadius="10" Padding="12,10" Margin="0,0,0,14">
+                        <TextBlock Text="For a credit card, enter the amount you currently owe as the opening balance." TextWrapping="Wrap"
+                                   Foreground="{StaticResource AccentBrush}" FontSize="12.5"/>
+                    </Border>
+                    <UniformGrid Rows="1">
+                        <StackPanel Margin="0,0,10,0">
+                            <TextBlock Text="Payment due day (1-28)" Style="{StaticResource Muted}" Margin="0,0,0,4"/>
+                            <TextBox Text="{Binding DueDay}" Margin="0,0,0,14"/>
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBlock Text="Credit limit" Style="{StaticResource Muted}" Margin="0,0,0,4"/>
+                            <TextBox Text="{Binding Limit}" Margin="0,0,0,14"/>
+                        </StackPanel>
+                    </UniformGrid>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
+                    <Button Content="Cancel" Style="{StaticResource Ghost}" IsCancel="True" MinWidth="96" Padding="18,10"/>
+                    <Button Content="Add account" IsDefault="True" Margin="0" MinWidth="130" Padding="18,10" Click="Save_Click"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Grid>
+</ui:DialogBase>

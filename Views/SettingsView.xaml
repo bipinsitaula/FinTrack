@@ -1,0 +1,69 @@
+<UserControl x:Class="FinanceTracker.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="clr-namespace:FinanceTracker.Controls">
+    <StackPanel>
+        <Border Style="{StaticResource Card}">
+            <StackPanel>
+                <TextBlock Text="Profile" Style="{StaticResource H2}"/>
+                <WrapPanel>
+                    <StackPanel><TextBlock Text="Your name" Style="{StaticResource Muted}" Margin="0,0,10,4"/><TextBox Text="{Binding UserName}" Width="240"/></StackPanel>
+                    <StackPanel VerticalAlignment="Bottom"><Button Content="Save name" Command="{Binding SaveNameCommand}"/></StackPanel>
+                </WrapPanel>
+            </StackPanel>
+        </Border>
+
+
+        <Border Style="{StaticResource Card}">
+            <StackPanel>
+                <TextBlock Text="Month-end report" Style="{StaticResource H2}"/>
+                <WrapPanel>
+                    <StackPanel><TextBlock Text="Month (yyyy-mm-dd, any day)" Style="{StaticResource Muted}" Margin="0,0,10,4"/><TextBox Text="{Binding ReportMonth, StringFormat='yyyy-MM-dd', UpdateSourceTrigger=LostFocus}"/></StackPanel>
+                    <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal">
+                        <Button Content="Export PDF" Command="{Binding ExportPdfCommand}" Margin="0,0,8,8"/>
+                        <Button Content="Export Excel" Command="{Binding ExportExcelCommand}" Margin="0,0,0,8"/>
+                    </StackPanel>
+                </WrapPanel>
+            </StackPanel>
+        </Border>
+
+        <Border Style="{StaticResource Card}">
+            <StackPanel>
+                <TextBlock Text="Backup &amp; restore" Style="{StaticResource H2}"/>
+                <TextBlock Text="Your data lives in one SQLite file. Leave the password empty for a plain copy, or set one to encrypt the backup with AES-256." Style="{StaticResource Muted}" TextWrapping="Wrap" Margin="0,0,0,8"/>
+                <TextBlock Text="{Binding DataPath}" Style="{StaticResource Muted}" Margin="0,0,0,8"/>
+                <WrapPanel>
+                    <StackPanel><TextBlock Text="Backup password (optional)" Style="{StaticResource Muted}" Margin="0,0,10,4"/><PasswordBox x:Name="BackupPassword" Width="200"/></StackPanel>
+                    <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal">
+                        <Button Content="Back up…" Click="Backup_Click" Margin="0,0,8,8"/>
+                        <Button Content="Restore…" Style="{StaticResource Ghost}" Click="Restore_Click" Margin="0,0,0,8"/>
+                    </StackPanel>
+                </WrapPanel>
+            </StackPanel>
+        </Border>
+
+        <Border Style="{StaticResource Card}">
+            <StackPanel>
+                <TextBlock Text="App lock" Style="{StaticResource H2}"/>
+                <TextBlock Text="Set a PIN of at least 4 digits to lock the app on start. Leave empty and save to remove the lock." Style="{StaticResource Muted}" TextWrapping="Wrap" Margin="0,0,0,8"/>
+                <WrapPanel>
+                    <StackPanel><TextBlock Text="New PIN" Style="{StaticResource Muted}" Margin="0,0,10,4"/><ui:PinBox x:Name="NewPin" Width="200" MaxLength="12"/></StackPanel>
+                    <StackPanel VerticalAlignment="Bottom"><Button Content="Save PIN" Click="SavePin_Click" Margin="0,0,0,8"/></StackPanel>
+                </WrapPanel>
+            </StackPanel>
+        </Border>
+
+        <Border Style="{StaticResource Card}">
+            <StackPanel>
+                <TextBlock Text="Exchange rates (NPR per 1 unit)" Style="{StaticResource H2}"/>
+                <WrapPanel>
+                    <StackPanel><TextBlock Text="USD" Style="{StaticResource Muted}" Margin="0,0,10,4"/><TextBox Text="{Binding Usd}"/></StackPanel>
+                    <StackPanel><TextBlock Text="INR" Style="{StaticResource Muted}" Margin="0,0,10,4"/><TextBox Text="{Binding Inr}"/></StackPanel>
+                    <StackPanel VerticalAlignment="Bottom"><Button Content="Save rates" Command="{Binding SaveRatesCommand}" Margin="0,0,0,8"/></StackPanel>
+                </WrapPanel>
+            </StackPanel>
+        </Border>
+
+        <TextBlock Text="{Binding Status}" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap"/>
+    </StackPanel>
+</UserControl>

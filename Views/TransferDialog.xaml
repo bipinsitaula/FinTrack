@@ -1,0 +1,48 @@
+<ui:DialogBase x:Class="FinanceTracker.Views.TransferDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="clr-namespace:FinanceTracker.Controls"
+        Title="Transfer money">
+    <Grid Margin="30">
+        <Border Background="White" CornerRadius="18" Padding="28,24,28,22" Width="460"
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Effect="{StaticResource DialogShadow}">
+            <StackPanel>
+                <DockPanel Margin="0,0,0,18">
+                    <Button DockPanel.Dock="Right" Style="{StaticResource IconButton}" Click="Close_Click" ToolTip="Close" Margin="0">
+                        <TextBlock Style="{StaticResource Icon}" Text="&#xE711;" FontSize="14"/>
+                    </Button>
+                    <StackPanel>
+                        <TextBlock Text="Transfer money" FontSize="20" FontWeight="Bold"/>
+                        <TextBlock Text="Move money between accounts, wallets or pay a credit card." Style="{StaticResource Muted}" FontSize="13" Margin="0,2,0,0"/>
+                    </StackPanel>
+                </DockPanel>
+
+                <TextBlock Text="From" Style="{StaticResource Muted}" Margin="0,0,0,4"/>
+                <ComboBox ItemsSource="{Binding Accounts}" SelectedItem="{Binding From}" Margin="0,0,0,4"/>
+                <TextBlock Style="{StaticResource Muted}" Margin="2,0,0,14" Text="{Binding From.Balance, StringFormat='Available: NPR {0:N2}', TargetNullValue=' ', FallbackValue=' '}"/>
+
+                <TextBlock Text="To" Style="{StaticResource Muted}" Margin="0,0,0,4"/>
+                <ComboBox ItemsSource="{Binding Accounts}" SelectedItem="{Binding To}" Margin="0,0,0,14"/>
+
+                <UniformGrid Rows="1">
+                    <StackPanel Margin="0,0,10,0">
+                        <TextBlock Text="Amount (NPR)" Style="{StaticResource Muted}" Margin="0,0,0,4"/>
+                        <TextBox x:Name="AmountBox" Text="{Binding Amount}" Margin="0,0,0,14"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Date (yyyy-mm-dd)" Style="{StaticResource Muted}" Margin="0,0,0,4"/>
+                        <TextBox Text="{Binding Date, StringFormat='yyyy-MM-dd', UpdateSourceTrigger=LostFocus}" Margin="0,0,0,14"/>
+                    </StackPanel>
+                </UniformGrid>
+
+                <TextBlock Text="Note (optional)" Style="{StaticResource Muted}" Margin="0,0,0,4"/>
+                <TextBox Text="{Binding Note}" Margin="0,0,0,14"/>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
+                    <Button Content="Cancel" Style="{StaticResource Ghost}" IsCancel="True" MinWidth="96" Padding="18,10"/>
+                    <Button Content="Transfer" IsDefault="True" Margin="0" MinWidth="130" Padding="18,10" Click="Save_Click"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Grid>
+</ui:DialogBase>

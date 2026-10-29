@@ -1,0 +1,52 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+[Pp]ublish/
+[Oo]ut/
+artifacts/
+
+# Visual Studio / Rider / VS Code
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+*.userprefs
+*.sln.docstates
+*.rsuser
+*.DotSettings.user
+
+# WPF markup compile temp projects
+*_wpftmp.csproj
+*.g.cs
+*.g.i.cs
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+
+# Local app data (the app stores its database under %AppData%, but keep any local copies out of git)
+*.db
+*.db-shm
+*.db-wal
+*.db.before-restore
+*.ftbak
+error.log
+receipts/
+
+# Test and tooling output
+TestResults/
+*.log
+*.tmp
+*.swp
+
+# OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# Claude Code per-user settings
+.claude/settings.local.json

@@ -1,0 +1,65 @@
+<Window x:Class="FinanceTracker.LockWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="clr-namespace:FinanceTracker.Controls"
+        Title="FinTrack" Width="460" SizeToContent="Height" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+    <Grid>
+        <Border Background="White" CornerRadius="20" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                Margin="28" Padding="36,34" Effect="{StaticResource CardShadow}" RenderTransformOrigin="0.5,0.5">
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform x:Name="CardScale"/>
+                    <TranslateTransform x:Name="CardShift"/>
+                </TransformGroup>
+            </Border.RenderTransform>
+            <Border.Triggers>
+                <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                    <BeginStoryboard><Storyboard>
+                        <DoubleAnimation Storyboard.TargetName="CardScale" Storyboard.TargetProperty="ScaleX" From="0.92" To="1" Duration="0:0:0.45">
+                            <DoubleAnimation.EasingFunction><BackEase EasingMode="EaseOut" Amplitude="0.4"/></DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                        <DoubleAnimation Storyboard.TargetName="CardScale" Storyboard.TargetProperty="ScaleY" From="0.92" To="1" Duration="0:0:0.45">
+                            <DoubleAnimation.EasingFunction><BackEase EasingMode="EaseOut" Amplitude="0.4"/></DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                        <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.4"/>
+                    </Storyboard></BeginStoryboard>
+                </EventTrigger>
+            </Border.Triggers>
+            <StackPanel VerticalAlignment="Center">
+                <Border Width="64" Height="64" CornerRadius="32" Background="{StaticResource AccentSoftBrush}" HorizontalAlignment="Center">
+                    <TextBlock Style="{StaticResource Icon}" Text="&#xE72E;" FontSize="26" Foreground="{StaticResource AccentBrush}" HorizontalAlignment="Center"/>
+                </Border>
+                <TextBlock HorizontalAlignment="Center" FontSize="22" FontWeight="Bold" Margin="0,18,0,0">
+                    <Run Text="FinTrack"/><Run Text="." Foreground="{StaticResource AccentBrush}"/>
+                </TextBlock>
+                <TextBlock x:Name="Heading" Text="Welcome back" FontSize="17" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,18,0,2"/>
+                <TextBlock x:Name="Hint" Text="Enter your PIN to unlock your finances." Style="{StaticResource Muted}" FontSize="13"
+                           HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" Margin="0,0,0,22"/>
+
+                <StackPanel x:Name="NamePanel" Visibility="Collapsed">
+                    <TextBlock Text="Your name" Style="{StaticResource Muted}" Margin="2,0,0,4"/>
+                    <TextBox x:Name="NameBox" FontSize="16" MaxLength="40" Margin="0,0,0,12" Padding="12,10" KeyDown="Name_KeyDown"/>
+                </StackPanel>
+
+                <TextBlock x:Name="PinLabel" Text="PIN" Style="{StaticResource Muted}" Margin="2,0,0,4"/>
+                <ui:PinBox x:Name="Pin" FontSize="20" InputAlignment="Center" MaxLength="12" Margin="0,0,0,12"
+                             PasswordChanged="Input_Changed" KeyDown="Input_KeyDown"/>
+
+                <StackPanel x:Name="ConfirmPanel" Visibility="Collapsed">
+                    <TextBlock Text="Confirm PIN" Style="{StaticResource Muted}" Margin="2,0,0,4"/>
+                    <ui:PinBox x:Name="Confirm" FontSize="20" InputAlignment="Center" MaxLength="12" Margin="0,0,0,12"
+                                 PasswordChanged="Input_Changed" KeyDown="Input_KeyDown"/>
+                </StackPanel>
+
+                <TextBlock x:Name="Message" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"
+                           Foreground="{StaticResource DangerBrush}" FontSize="13" MinHeight="20" Margin="0,0,0,10"/>
+
+                <Button x:Name="Primary" Content="Unlock" Click="Primary_Click" Margin="0,0,0,8" Padding="16,12" HorizontalAlignment="Stretch"/>
+                <Button x:Name="Skip" Content="Skip for now" Style="{StaticResource Ghost}" Click="Skip_Click" Margin="0" Padding="16,11"
+                        HorizontalAlignment="Stretch" Visibility="Collapsed"/>
+                <TextBlock x:Name="Footer" Text="Your data stays on this PC. Nothing is sent anywhere." Style="{StaticResource Muted}"
+                           HorizontalAlignment="Center" Margin="0,18,0,0" FontSize="11"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
