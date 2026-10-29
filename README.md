@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/logo.png" alt="FinTrack logo" width="240">
+</p>
+
 # FinTrack
 
 A personal finance manager for Windows. Your whole financial picture on one dashboard: money you have, money you owe, money you spend and money you have planned. It is **local-first**: it runs fully offline and keeps everything in a single SQLite file on your PC. Amounts are in **NPR**, and dates can be shown in **AD (English)** or **BS (Nepali, Bikram Sambat)**.
@@ -93,7 +97,15 @@ Self-contained single file (no .NET install needed on the target PC):
 dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish
 ```
 
-The result is `publish/FinanceTracker.exe`. It is large (the .NET runtime and SkiaSharp are bundled). Use `--self-contained false` for a much smaller exe if the .NET 10 Desktop Runtime is installed. The exe is not code-signed, so Windows SmartScreen may ask you to confirm the first run.
+The result is `publish/FinanceTracker.exe` (about 200 MB). Keep the `QuestPDF.Fonts.Lato.br` file next to it, because PDF export uses that font. It is large (the .NET runtime and SkiaSharp are bundled). Use `--self-contained false` for a much smaller exe if the .NET 10 Desktop Runtime is installed. The exe is not code-signed, so Windows SmartScreen may ask you to confirm the first run.
+
+### Troubleshooting
+
+**"An Application Control policy has blocked this file"** when starting `FinanceTracker.exe`: Windows Smart App Control (or another application-control policy) blocks unsigned executables, and the exe .NET generates is unsigned.
+
+- From source, just use `dotnet run`. Debug builds do not generate that exe; they run through the signed `dotnet.exe`.
+- You can also start a build directly with `dotnet bin/Debug/net10.0-windows10.0.19041.0/FinanceTracker.dll`.
+- A published Release `FinanceTracker.exe` is unsigned too, so it is blocked on PCs with Smart App Control on. Either run the published `FinanceTracker.dll` with `dotnet`, or sign the exe with a code-signing certificate. (Turning Smart App Control off works but cannot be undone without reinstalling Windows, so it is not recommended.)
 
 ## Using the app
 
