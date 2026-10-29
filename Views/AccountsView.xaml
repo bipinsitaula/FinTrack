@@ -69,24 +69,12 @@
             </StackPanel></Border>
         </UniformGrid>
 
-        <DockPanel Margin="0,4,0,12">
-            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                <Button AutomationProperties.Name="Transfer" Command="{Binding OpenTransferCommand}" Style="{StaticResource Soft}" Margin="0,0,8,0">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Style="{StaticResource Icon}" Text="&#xE8AB;" FontSize="14" Margin="0,0,8,0"/>
-                        <TextBlock Text="Transfer"/>
-                    </StackPanel>
-                </Button>
-                <Button AutomationProperties.Name="Add Account" Command="{Binding OpenAddAccountCommand}" Margin="0,0,8,0">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Style="{StaticResource Icon}" Text="&#xE710;" FontSize="14" Margin="0,0,8,0"/>
-                        <TextBlock Text="Add Account"/>
-                    </StackPanel>
-                </Button>
-                <Button Content="Delete selected" Style="{StaticResource Ghost}" Command="{Binding DeleteAccountCommand}" Margin="0"/>
-            </StackPanel>
-            <TextBlock Text="Your accounts" Style="{StaticResource H2}" Margin="0" VerticalAlignment="Center"/>
-        </DockPanel>
+        <StackPanel Orientation="Horizontal" Margin="0,4,0,14">
+            <Button AutomationProperties.Name="Add Account" Command="{Binding OpenAddAccountCommand}"><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource Icon}" Text="&#xE710;" FontSize="14" Margin="0,0,8,0"/><TextBlock Text="Add Account"/></StackPanel></Button>
+            <Button AutomationProperties.Name="Transfer" Style="{StaticResource Soft}" Command="{Binding OpenTransferCommand}"><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource Icon}" Text="&#xE8AB;" FontSize="14" Margin="0,0,8,0"/><TextBlock Text="Transfer"/></StackPanel></Button>
+            <Button Content="Delete selected" Style="{StaticResource Ghost}" Command="{Binding DeleteAccountCommand}"/>
+            <TextBlock Text="{Binding Status}" Style="{StaticResource Muted}" FontSize="13" VerticalAlignment="Center" Margin="6,0,0,8"/>
+        </StackPanel>
 
         <ListBox ItemsSource="{Binding Accounts}" SelectedItem="{Binding Selected}" Background="Transparent" BorderThickness="0"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
@@ -138,6 +126,6 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <TextBlock Text="{Binding Status}" Style="{StaticResource Muted}" FontSize="13" TextWrapping="Wrap" Margin="0,4,0,0"/>
+        
     </StackPanel>
 </UserControl>

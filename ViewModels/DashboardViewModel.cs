@@ -33,7 +33,7 @@ public class DashboardViewModel
     public ISeries[] Trend { get; }
     public Axis[] TrendX { get; }
     public Axis[] TrendY { get; }
-    public string MonthLabel { get; } = DateTime.Today.ToString("MMMM yyyy");
+    public string MonthLabel { get; } = DateDisplay.MonthYear(DateTime.Today, true);
     public bool HasSpending { get; }
     public List<RecentItem> Recent { get; }
     public ISeries[] CashFlow { get; }
@@ -75,14 +75,14 @@ public class DashboardViewModel
                 (t.Signed >= 0 ? "+" : "-") + t.Amount.ToString("N0"),
                 t.Signed >= 0)).ToList();
 
-        var months = Enumerable.Range(0, 6).Select(i => DateTime.Today.AddMonths(i - 5)).ToList();
+        var months = Enumerable.Range(0, 6).Select(i => DateDisplay.AddMonths(DateTime.Today, i - 5)).ToList();
         var totals = months.Select(m => FinanceService.MonthTotals(db, m)).ToList();
         CashFlow = new ISeries[]
         {
             new ColumnSeries<double> { Name = "Income", Values = totals.Select(t => (double)t.Income).ToArray(), Fill = new SolidColorPaint(SKColor.Parse("#34D399")), MaxBarWidth = 16, Rx = 4, Ry = 4 },
             new ColumnSeries<double> { Name = "Expenses", Values = totals.Select(t => (double)t.Expense).ToArray(), Fill = new SolidColorPaint(SKColor.Parse("#FB7185")), MaxBarWidth = 16, Rx = 4, Ry = 4 },
         };
-        CashX = new[] { new Axis { Labels = months.Select(m => m.ToString("MMM")).ToArray(), LabelsPaint = new SolidColorPaint(Muted), TextSize = 12 } };
+        CashX = new[] { new Axis { Labels = months.Select(m => DateDisplay.Month(m)).ToArray(), LabelsPaint = new SolidColorPaint(Muted), TextSize = 12 } };
         CashY = new[] { new Axis { LabelsPaint = new SolidColorPaint(Muted), TextSize = 12, SeparatorsPaint = new SolidColorPaint(SKColor.Parse("#E2E8F0"), 1), Labeler = v => v.ToString("N0"), MinLimit = 0 } };
 
         var trend = FinanceService.NetWorthTrend(db, 12);
@@ -99,7 +99,7 @@ public class DashboardViewModel
                 Name = "Net worth",
             }
         };
-        TrendX = new[] { new Axis { Labels = trend.Select(t => t.Month.ToString("MMM")).ToArray(), LabelsPaint = new SolidColorPaint(Muted), TextSize = 12 } };
+        TrendX = new[] { new Axis { Labels = trend.Select(t => DateDisplay.Month(t.Month)).ToArray(), LabelsPaint = new SolidColorPaint(Muted), TextSize = 12 } };
         TrendY = new[]
         {
             new Axis

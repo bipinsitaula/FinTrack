@@ -300,7 +300,8 @@ public partial class InvestmentsViewModel : PageViewModel
     [ObservableProperty] private decimal _newValue;
 
     // tax
-    [ObservableProperty] private int _taxYear = DateTime.Today.Year;
+    [ObservableProperty] private int _taxYear = DateDisplay.YearOf(DateTime.Today);
+    public string TaxYearLabel => DateDisplay.UseBs ? "Year (BS)" : "Year (AD)";
     [ObservableProperty] private decimal _taxIncome;
     [ObservableProperty] private decimal _taxDeductions;
     [ObservableProperty] private decimal _taxable;
@@ -392,7 +393,7 @@ public partial class InvestmentsViewModel : PageViewModel
     private void CalcTax()
     {
         using var db = new AppDb();
-        var txs = db.Transactions.Include(t => t.Category).AsNoTracking().ToList().Where(t => t.Date.Year == TaxYear).ToList();
+        var txs = db.Transactions.Include(t => t.Category).AsNoTracking().ToList().Where(t => DateDisplay.YearOf(t.Date) == TaxYear).ToList();
         TaxIncome = txs.Where(t => t.Kind == TxKind.Income).Sum(t => t.Amount);
         var cats = db.Categories.AsNoTracking().ToDictionary(c => c.Id);
         var lines = txs.Where(t => t.Kind == TxKind.Expense && t.CategoryId is int)
@@ -455,7 +456,7 @@ public class InsightsViewModel
 // ===================== Settings =====================
 public partial class SettingsViewModel : PageViewModel
 {
-    [ObservableProperty] private DateTime _reportMonth = new(DateTime.Today.Year, DateTime.Today.Month, 1);
+    [ObservableProperty] private DateTime _reportMonth = DateDisplay.MonthRange(DateTime.Today).Start;
     [ObservableProperty] private decimal _usd;
     [ObservableProperty] private decimal _inr;
     [ObservableProperty] private bool _hasPin = SecurityService.HasPin();

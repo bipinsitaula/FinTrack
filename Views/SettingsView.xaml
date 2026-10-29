@@ -18,7 +18,7 @@
             <StackPanel>
                 <TextBlock Text="Month-end report" Style="{StaticResource H2}"/>
                 <WrapPanel>
-                    <StackPanel><TextBlock Text="Month (yyyy-mm-dd, any day)" Style="{StaticResource Muted}" Margin="0,0,10,4"/><TextBox Text="{Binding ReportMonth, StringFormat='yyyy-MM-dd', UpdateSourceTrigger=LostFocus}"/></StackPanel>
+                    <StackPanel><TextBlock Text="Month (type any AD date in it, yyyy-mm-dd)" Style="{StaticResource Muted}" Margin="0,0,10,4"/><TextBox Text="{Binding ReportMonth, StringFormat='yyyy-MM-dd', UpdateSourceTrigger=LostFocus}"/></StackPanel>
                     <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal">
                         <Button Content="Export PDF" Command="{Binding ExportPdfCommand}" Margin="0,0,8,8"/>
                         <Button Content="Export Excel" Command="{Binding ExportExcelCommand}" Margin="0,0,0,8"/>

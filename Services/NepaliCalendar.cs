@@ -176,4 +176,16 @@ public static class NepaliCalendar
         var bs = ToBs(ad);
         return bs is { } d ? $"{d.Day} {MonthNames[d.Month - 1]} {d.Year}" : "";
     }
+
+    public static int DaysInMonth(int year, int month) => Table[year][month - 1];
+
+    /// <summary>Converts a BS date to AD, or null when outside the supported range.</summary>
+    public static DateTime? FromBs(int year, int month, int day)
+    {
+        if (year < MinYear || year > MaxYear || month < 1 || month > 12) return null;
+        var days = 0;
+        for (var y = MinYear; y < year; y++) days += Table[y].Sum();
+        for (var m = 1; m < month; m++) days += Table[year][m - 1];
+        return Start.AddDays(days + day - 1);
+    }
 }

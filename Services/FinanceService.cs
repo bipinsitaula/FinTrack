@@ -109,8 +109,8 @@ public static class FinanceService
         var result = new List<(DateTime, decimal)>();
         for (var i = months - 1; i >= 0; i--)
         {
-            var monthStart = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(-i);
-            var end = monthStart.AddMonths(1).AddDays(-1);
+            var monthStart = DateDisplay.AddMonths(DateTime.Today, -i);
+            var end = DateDisplay.MonthRange(monthStart).End;
             var acct = accounts.Sum(a => a.OpeningBalance) + txs.Where(t => t.Date <= end).Sum(t => t.Signed);
             result.Add((monthStart, acct + otherNet));
         }
@@ -119,7 +119,7 @@ public static class FinanceService
 
     // ---------- monthly numbers ----------
     private static IEnumerable<Transaction> InMonth(IEnumerable<Transaction> txs, DateTime month) =>
-        txs.Where(t => t.Date.Year == month.Year && t.Date.Month == month.Month);
+        txs.Where(t => DateDisplay.SameMonth(month, t.Date));
 
     public static (decimal Income, decimal Expense) MonthTotals(AppDb db, DateTime month)
     {
@@ -234,11 +234,11 @@ public static class FinanceService
         var cats = db.Categories.AsNoTracking().ToDictionary(c => c.Id);
         string Top(Transaction t) => t.CategoryId is int i && cats.TryGetValue(i, out var c)
             ? (c.ParentId is int p && cats.TryGetValue(p, out var pc) ? pc.Name : c.Name) : "Uncategorised";
-        var current = txs.Where(t => t.Date.Year == now.Year && t.Date.Month == now.Month).GroupBy(Top).ToDictionary(g => g.Key, g => g.Sum(t => t.Amount));
-        var prevMonths = Enumerable.Range(1, 3).Select(i => now.AddMonths(-i)).ToList();
+        var current = txs.Where(t => DateDisplay.SameMonth(now, t.Date)).GroupBy(Top).ToDictionary(g => g.Key, g => g.Sum(t => t.Amount));
+        var prevMonths = Enumerable.Range(1, 3).Select(i => DateDisplay.AddMonths(now, -i)).ToList();
         foreach (var (cat, amount) in current)
         {
-            var avg = prevMonths.Average(m => txs.Where(t => t.Date.Year == m.Year && t.Date.Month == m.Month && Top(t) == cat).Sum(t => t.Amount));
+            var avg = prevMonths.Average(m => txs.Where(t => DateDisplay.SameMonth(m, t.Date) && Top(t) == cat).Sum(t => t.Amount));
             if (avg > 0 && amount > avg * 1.5m && amount - avg > 500)
                 result.Add($"{cat}: {amount:N0} this month is {amount / avg * 100 - 100:N0}% above your 3-month average ({avg:N0}).");
         }
@@ -252,11 +252,11 @@ public static class FinanceService
         var loans = db.Loans.Include(l => l.Payments).AsNoTracking().ToList();
         var subs = db.Subscriptions.AsNoTracking().Where(s => s.Active).ToList();
         var result = new List<ForecastMonth>();
-        var start = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+        var today = DateTime.Today;
         for (var i = 1; i <= months; i++)
         {
-            var m = start.AddMonths(i);
-            var next = m.AddMonths(1);
+            var m = DateDisplay.AddMonths(today, i);
+            var next = DateDisplay.AddMonths(today, i + 1);
             decimal Count(DateTime first, BillCycle c, decimal amt)
             {
                 decimal total = 0;
@@ -280,7 +280,7 @@ public static class FinanceService
         var (inc, exp) = MonthTotals(db, now);
         if (inc == 0) // fall back to last month if the month has just started
         {
-            (inc, exp) = MonthTotals(db, now.AddMonths(-1));
+            (inc, exp) = MonthTotals(db, DateDisplay.AddMonths(now, -1));
         }
         var savingsRate = inc <= 0 ? 0 : (double)((inc - exp) / inc);
         var savings = (int)Math.Round(Math.Clamp(savingsRate / 0.20, 0, 1) * 25);
@@ -291,7 +291,7 @@ public static class FinanceService
         var debt = (int)Math.Round((1 - Math.Clamp((dti - 0.2) / 0.3, 0, 1)) * 25);
 
         var liquid = LoadAccounts(db).Where(a => a.Type != AccountType.CreditCard).Sum(a => Math.Max(0, a.Balance));
-        var avgExp = Enumerable.Range(1, 3).Select(i => MonthTotals(db, now.AddMonths(-i)).Expense).Where(e => e > 0).DefaultIfEmpty(exp).Average();
+        var avgExp = Enumerable.Range(1, 3).Select(i => MonthTotals(db, DateDisplay.AddMonths(now, -i)).Expense).Where(e => e > 0).DefaultIfEmpty(exp).Average();
         var months = avgExp <= 0 ? 0 : (double)(liquid / avgExp);
         var emergency = (int)Math.Round(Math.Clamp(months / 6.0, 0, 1) * 25);
 

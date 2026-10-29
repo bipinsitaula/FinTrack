@@ -152,7 +152,7 @@ public static class NotificationService
             foreach (var d in due)
             {
                 new Microsoft.Toolkit.Uwp.Notifications.ToastContentBuilder()
-                    .AddText($"{d.Kind} due {d.Date:dd MMM}")
+                    .AddText($"{d.Kind} due {DateDisplay.Short(d.Date)}")
                     .AddText($"{d.Title} – {FinanceService.Currency} {d.Amount:N0}")
                     .Show();
             }
@@ -172,7 +172,7 @@ public static class ExportService
         using var db = new AppDb();
         var (i, e) = FinanceService.MonthTotals(db, month);
         var txs = db.Transactions.Include(t => t.Account).Include(t => t.Category).AsNoTracking().ToList()
-            .Where(t => t.Date.Year == month.Year && t.Date.Month == month.Month).OrderBy(t => t.Date).ToList();
+            .Where(t => DateDisplay.SameMonth(month, t.Date)).OrderBy(t => t.Date).ToList();
         return new Report(month, i, e, FinanceService.SpendingByCategory(db, month), FinanceService.Budgets(db, month),
             FinanceService.NetWorth(db), FinanceService.Health(db), txs);
     }
@@ -186,7 +186,7 @@ public static class ExportService
             p.DefaultTextStyle(t => t.FontSize(10));
             p.Header().Column(h =>
             {
-                h.Item().Text($"Month-end report – {month:MMMM yyyy}").FontSize(20).Bold();
+                h.Item().Text($"Month-end report – {DateDisplay.MonthYear(month, true)}").FontSize(20).Bold();
                 h.Item().Text($"All amounts in {FinanceService.Currency}").FontColor(Colors.Grey.Darken1);
             });
             p.Content().PaddingVertical(12).Column(col =>
@@ -220,7 +220,7 @@ public static class ExportService
                     t.ColumnsDefinition(cd => { cd.ConstantColumn(60); cd.RelativeColumn(2); cd.RelativeColumn(2); cd.RelativeColumn(3); cd.RelativeColumn(); });
                     foreach (var x in r.Txs)
                     {
-                        t.Cell().Text(x.Date.ToString("dd MMM")); t.Cell().Text(x.AccountName);
+                        t.Cell().Text(DateDisplay.Short(x.Date)); t.Cell().Text(x.AccountName);
                         t.Cell().Text(x.CategoryName); t.Cell().Text(x.Note);
                         t.Cell().AlignRight().Text(x.Signed.ToString("N2"));
                     }
@@ -235,7 +235,7 @@ public static class ExportService
         var r = Build(month);
         using var wb = new XLWorkbook();
         var s = wb.Worksheets.Add("Summary");
-        s.Cell(1, 1).Value = $"Month-end report – {month:MMMM yyyy}";
+        s.Cell(1, 1).Value = $"Month-end report – {DateDisplay.MonthYear(month, true)}";
         s.Cell(1, 1).Style.Font.Bold = true;
         var rows = new (string, object)[]
         {

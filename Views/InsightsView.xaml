@@ -58,7 +58,7 @@
                 <DataGrid ItemsSource="{Binding Forecast}">
                     <DataGrid.Columns>
                             <DataGridTemplateColumn Header="SN" Width="64" CanUserSort="False" CellTemplate="{StaticResource SnCell}"/>
-                        <DataGridTextColumn Header="Month" Binding="{Binding Month, StringFormat='MMM yyyy'}" Width="*"/>
+                        <DataGridTextColumn Header="Month" Binding="{Binding Month, Converter={StaticResource DateFmt}, ConverterParameter=monthyear}" Width="*"/>
                         <DataGridTextColumn Header="Recurring income" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Income, StringFormat='{}{0:N0}'}" Width="*"/>
                         <DataGridTextColumn Header="EMIs" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Emis, StringFormat='{}{0:N0}'}" Width="*"/>
                         <DataGridTextColumn Header="Subscriptions" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Subscriptions, StringFormat='{}{0:N0}'}" Width="*"/>

@@ -67,7 +67,7 @@ Built with WPF, MVVM and .NET 10. Clean light theme with a blue accent, animated
 
 **Interface**
 - Pop-up forms for adding and editing, styled confirmation dialogs for anything destructive, show/hide eye on PIN fields.
-- AD/BS switch in the header that changes how dates are displayed everywhere.
+- AD/BS switch in the header: dates everywhere, and the monthly groupings (totals, charts, forecast, reports), follow the chosen calendar.
 - Smooth wheel scrolling, page and card transitions, count-up numbers.
 
 ## Getting started
@@ -82,17 +82,15 @@ Built with WPF, MVVM and .NET 10. Clean light theme with a blue accent, animated
 From the repository root:
 
 ```bash
-dotnet run --project FinanceTracker
+dotnet run
 ```
-
-Or open the `FinanceTracker` folder and run `dotnet run`.
 
 ### Build an exe
 
 Self-contained single file (no .NET install needed on the target PC):
 
 ```bash
-dotnet publish FinanceTracker -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish
+dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish
 ```
 
 The result is `publish/FinanceTracker.exe`. It is large (the .NET runtime and SkiaSharp are bundled). Use `--self-contained false` for a much smaller exe if the .NET 10 Desktop Runtime is installed. The exe is not code-signed, so Windows SmartScreen may ask you to confirm the first run.
@@ -103,7 +101,7 @@ The result is `publish/FinanceTracker.exe`. It is large (the .NET runtime and Sk
 2. **Add accounts first** (Accounts, Add Account). For a credit card, enter the amount you currently owe as the opening balance.
 3. **Record transactions** from Transactions, Add Transaction. Use Split Bill for one payment across several categories.
 4. **Set budgets, loans, bills and goals** from their pages. Each page has an add button that opens a pop-up.
-5. **Switch AD/BS** in the header any time. Dates you type into forms are always AD (`yyyy-mm-dd`); only displayed dates follow the switch.
+5. **Switch AD/BS** in the header any time. Dates you type into forms are always AD (`yyyy-mm-dd`); everything the app shows, and how it groups months, follows the switch.
 6. **Log out** (header) to return to the login screen. Without a PIN, logging out closes the app.
 
 Handy shortcuts: `Esc` closes any pop-up, `Enter` saves it, and pressing `Enter` in the header search jumps to matching transactions.
@@ -127,24 +125,24 @@ Set the `FT_DATA` environment variable to use a different folder (handy for test
 ## Project structure
 
 ```
-FinanceTracker/
-  App.xaml(.cs)           Startup, global error handler, smooth scrolling, login flow
-  MainWindow.xaml         Shell: sidebar, header (search, AD/BS, alerts, log out)
-  LockWindow.xaml         First-run setup and login screen
-  Models/                 EF Core entities (Account, Transaction, Loan, Goal, ...)
-  Data/AppDb.cs           DbContext, database location, first-run seed data
-  Services/
-    FinanceService.cs       Balances, net worth, budgets, health score, forecast, alerts
-    LoanCalculator.cs       EMI, amortization, payoff planner, prepayment, deposits
-    NepaliCalendar.cs       AD to BS conversion (BS 1975 to 2100 month-length table)
-    DateDisplay.cs          AD/BS display rules used by every date
-    SystemServices.cs       PIN, backup/restore, toasts, PDF/Excel export, profile
-  ViewModels/             One view model per page (CommunityToolkit.Mvvm)
-  Views/                  Pages, pop-up forms and dialogs
-  Controls/               CountUp, PinBox, DialogBase, SmoothScroll
-  Themes/
-    Theme.xaml              Colours, buttons, inputs, tables, scrollbars, animations
-    Forms.xaml              Field layouts for every pop-up form
+App.xaml(.cs)             Startup, global error handler, smooth scrolling, login flow
+MainWindow.xaml           Shell: sidebar, header (search, AD/BS, alerts, log out)
+LockWindow.xaml           First-run setup and login screen
+FinanceTracker.csproj     Project file
+Models/                   EF Core entities (Account, Transaction, Loan, Goal, ...)
+Data/AppDb.cs             DbContext, database location, first-run seed data
+Services/
+  FinanceService.cs         Balances, net worth, budgets, health score, forecast, alerts
+  LoanCalculator.cs         EMI, amortization, payoff planner, prepayment, deposits
+  NepaliCalendar.cs         AD/BS conversion (BS 1975 to 2100 month-length table)
+  DateDisplay.cs            AD/BS display and month-grouping rules used everywhere
+  SystemServices.cs         PIN, backup/restore, toasts, PDF/Excel export, profile
+ViewModels/               One view model per page (CommunityToolkit.Mvvm)
+Views/                    Pages, pop-up forms and dialogs
+Controls/                 CountUp, PinBox, DialogBase, SmoothScroll
+Themes/
+  Theme.xaml                Colours, buttons, inputs, tables, scrollbars, animations
+  Forms.xaml                Field layouts for every pop-up form
 ```
 
 ## Tech stack
@@ -166,7 +164,7 @@ The Nepali calendar month lengths come from the open-source [npdatetime](https:/
 - **Schema changes:** the database is created with `EnsureCreated`, not migrations. Adding or changing columns needs a move to EF migrations first.
 - **LiveCharts2** is used at a prerelease version.
 - **QuestPDF** is used under its Community license; check that your use qualifies before distributing.
-- **Month-based figures use calendar (AD) months:** month totals, the cash flow and net worth charts and the forecast. BS months start mid-month, so they are not regrouped.
+- **Months follow the AD/BS switch.** In BS mode, month totals, budgets, charts, the forecast, the health score and reports use Nepali months, and the tax helper uses the BS year. Loan, bill and deposit schedules still step by AD months, and credit-card due days are AD days of the month.
 - **Net worth trend:** only account balances are historical. Loans, investments and deposits are held at today's value across the whole trend.
 - **Cash flow forecast** uses only recurring income, EMIs and subscriptions. Everyday spending is not projected.
 - **Tax helper** sums income and flagged deductible categories only. It applies no tax slabs and is not tax advice.

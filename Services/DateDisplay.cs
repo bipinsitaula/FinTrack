@@ -39,6 +39,41 @@ public static class DateDisplay
         return Ad(d, "dd");
     }
 
+    /// <summary>First and last day (inclusive) of the AD or BS month that contains the date.</summary>
+    public static (DateTime Start, DateTime End) MonthRange(DateTime d)
+    {
+        if (UseBs && NepaliCalendar.ToBs(d) is { } b && NepaliCalendar.FromBs(b.Year, b.Month, 1) is { } s)
+            return (s, s.AddDays(NepaliCalendar.DaysInMonth(b.Year, b.Month) - 1));
+        var start = new DateTime(d.Year, d.Month, 1);
+        return (start, start.AddMonths(1).AddDays(-1));
+    }
+
+    /// <summary>First day of the month that is <paramref name="months"/> months away from the month containing the date.</summary>
+    public static DateTime AddMonths(DateTime d, int months)
+    {
+        if (UseBs && NepaliCalendar.ToBs(d) is { } b)
+        {
+            var total = b.Year * 12 + (b.Month - 1) + months;
+            if (NepaliCalendar.FromBs(total / 12, total % 12 + 1, 1) is { } s) return s;
+        }
+        return new DateTime(d.Year, d.Month, 1).AddMonths(months);
+    }
+
+    public static bool SameMonth(DateTime month, DateTime other)
+    {
+        var r = MonthRange(month);
+        return other.Date >= r.Start && other.Date <= r.End;
+    }
+
+    /// <summary>"October 2026" / "Oct 2026" or "Kartik 2083".</summary>
+    public static string MonthYear(DateTime d, bool full)
+    {
+        if (UseBs && NepaliCalendar.ToBs(d) is { } b) return $"{NepaliCalendar.MonthNames[b.Month - 1]} {b.Year}";
+        return Ad(d, full ? "MMMM yyyy" : "MMM yyyy");
+    }
+
+    public static int YearOf(DateTime d) => UseBs && NepaliCalendar.ToBs(d) is { } b ? b.Year : d.Year;
+
     /// <summary>The date in the other calendar, for the small second line ("12 Kartik 2083 BS" or "29 Oct 2026 AD").</summary>
     public static string Alt(DateTime d)
     {
@@ -57,6 +92,7 @@ public class DateConverter : IValueConverter
         {
             "month" => DateDisplay.Month(d),
             "day" => DateDisplay.Day(d),
+            "monthyear" => DateDisplay.MonthYear(d, false),
             "short" => DateDisplay.Short(d),
             _ => DateDisplay.Full(d),
         };

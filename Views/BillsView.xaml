@@ -29,6 +29,12 @@
                             </ItemsControl>
                         </StackPanel></Border>
                     </UniformGrid>
+                    <WrapPanel Margin="0,0,0,12">
+                        <Button AutomationProperties.Name="Add Bill" Command="{Binding OpenAddBillCommand}"><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource Icon}" Text="&#xE710;" FontSize="14" Margin="0,0,8,0"/><TextBlock Text="Add Bill"/></StackPanel></Button>
+                        <ComboBox ItemsSource="{Binding Accounts}" DisplayMemberPath="Name" SelectedItem="{Binding PayFrom}" MinWidth="170"/>
+                        <Button Content="Mark paid" Style="{StaticResource Soft}" Command="{Binding MarkPaidCommand}"/>
+                        <Button Content="Delete" Style="{StaticResource Ghost}" Command="{Binding DeleteCommand}"/>
+                    </WrapPanel>
                     <DataGrid ItemsSource="{Binding Subs}" SelectedItem="{Binding Selected}" MaxHeight="280">
                         <DataGrid.Columns>
                             <DataGridTemplateColumn Header="SN" Width="64" CanUserSort="False" CellTemplate="{StaticResource SnCell}"/>
@@ -40,17 +46,17 @@
                             <DataGridTextColumn Header="Yearly cost" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding YearlyCost, StringFormat='{}{0:N0}'}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <WrapPanel Margin="0,0,0,12">
-                        <Button AutomationProperties.Name="Add Bill" Command="{Binding OpenAddBillCommand}"><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource Icon}" Text="&#xE710;" FontSize="14" Margin="0,0,8,0"/><TextBlock Text="Add Bill"/></StackPanel></Button>
-                        <ComboBox ItemsSource="{Binding Accounts}" DisplayMemberPath="Name" SelectedItem="{Binding PayFrom}" MinWidth="170"/>
-                        <Button Content="Mark paid" Style="{StaticResource Soft}" Command="{Binding MarkPaidCommand}"/>
-                        <Button Content="Delete" Style="{StaticResource Ghost}" Command="{Binding DeleteCommand}"/>
-                    </WrapPanel>
                 </StackPanel>
             </TabItem>
 
             <TabItem Header="Insurance">
                 <StackPanel>
+                    <WrapPanel Margin="0,0,0,12">
+                        <Button AutomationProperties.Name="Add Policy" Command="{Binding OpenAddPolicyCommand}"><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource Icon}" Text="&#xE710;" FontSize="14" Margin="0,0,8,0"/><TextBlock Text="Add Policy"/></StackPanel></Button>
+                        <ComboBox ItemsSource="{Binding Accounts}" DisplayMemberPath="Name" SelectedItem="{Binding PayFrom}" MinWidth="170"/>
+                        <Button Content="Pay premium" Style="{StaticResource Soft}" Command="{Binding PayPremiumCommand}"/>
+                        <Button Content="Delete" Style="{StaticResource Ghost}" Command="{Binding DeletePolicyCommand}"/>
+                    </WrapPanel>
                     <DataGrid ItemsSource="{Binding Policies}" SelectedItem="{Binding SelectedPolicy}" MaxHeight="260">
                         <DataGrid.Columns>
                             <DataGridTemplateColumn Header="SN" Width="64" CanUserSort="False" CellTemplate="{StaticResource SnCell}"/>
@@ -62,12 +68,6 @@
                             <DataGridTextColumn Header="Coverage" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Coverage, StringFormat='{}{0:N0}'}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <WrapPanel Margin="0,0,0,12">
-                        <Button AutomationProperties.Name="Add Policy" Command="{Binding OpenAddPolicyCommand}"><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource Icon}" Text="&#xE710;" FontSize="14" Margin="0,0,8,0"/><TextBlock Text="Add Policy"/></StackPanel></Button>
-                        <ComboBox ItemsSource="{Binding Accounts}" DisplayMemberPath="Name" SelectedItem="{Binding PayFrom}" MinWidth="170"/>
-                        <Button Content="Pay premium" Style="{StaticResource Soft}" Command="{Binding PayPremiumCommand}"/>
-                        <Button Content="Delete" Style="{StaticResource Ghost}" Command="{Binding DeletePolicyCommand}"/>
-                    </WrapPanel>
                 </StackPanel>
             </TabItem>
         </TabControl>
