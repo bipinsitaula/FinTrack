@@ -33,6 +33,9 @@ Built with WPF, MVVM and .NET 10. Clean light theme with a blue accent, animated
 - Search bar plus a filter pop-up (account, category, date range).
 - Signed, colour-coded amounts, category pills and a serial number (SN) column in every table.
 
+**Income**
+- A dedicated Income page: enter an amount, choose the bank, e-wallet or cash it went into, and pick the source (salary, freelance, rent received and so on). It raises that account's balance and appears in Transactions. Totals for this month, last month and all time. "Add Money" on the Accounts page opens the same form.
+
 **Budgets**
 - Monthly limit per category with progress bars and warnings at 80% and 100%.
 

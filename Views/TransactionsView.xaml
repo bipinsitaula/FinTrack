@@ -106,7 +106,7 @@
                         </DataGrid.Columns>
                     </DataGrid>
                     <DockPanel>
-                        <Button Content="Delete selected" Style="{StaticResource Ghost}" Command="{Binding DeleteSelectedCommand}" DockPanel.Dock="Left"/>
+                        <Button Content="Delete selected" Style="{StaticResource Danger}" Command="{Binding DeleteSelectedCommand}" DockPanel.Dock="Left"/>
                         <TextBlock Text="{Binding Status}" Style="{StaticResource Muted}" FontSize="13" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="6,0,0,8"/>
                         <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,12,0">
                             <Run Text="Income " Foreground="{StaticResource MutedBrush}"/><Run Text="{Binding FilteredIncome, Mode=OneWay, StringFormat='{}{0:N0}'}" Foreground="{StaticResource GoodBrush}"/>
@@ -120,7 +120,7 @@
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                         <Button AutomationProperties.Name="Add Recurring Income" Command="{Binding OpenRecurringCommand}"><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource Icon}" Text="&#xE710;" FontSize="14" Margin="0,0,8,0"/><TextBlock Text="Add Recurring Income"/></StackPanel></Button>
-                        <Button Content="Delete selected" Style="{StaticResource Ghost}" Command="{Binding DeleteRecurringCommand}"/>
+                        <Button Content="Delete selected" Style="{StaticResource Danger}" Command="{Binding DeleteRecurringCommand}"/>
                         <TextBlock Text="Posted automatically when due." Style="{StaticResource Muted}" FontSize="13" VerticalAlignment="Center" Margin="6,0,0,8"/>
                     </StackPanel>
                     <DataGrid ItemsSource="{Binding Recurring}" SelectedItem="{Binding SelectedRecurring}" MaxHeight="220">

@@ -21,6 +21,7 @@
             <DataTemplate DataType="{x:Type vm:DashboardViewModel}"><v:DashboardView/></DataTemplate>
             <DataTemplate DataType="{x:Type vm:AccountsViewModel}"><v:AccountsView/></DataTemplate>
             <DataTemplate DataType="{x:Type vm:TransactionsViewModel}"><v:TransactionsView/></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:IncomeViewModel}"><v:IncomeView/></DataTemplate>
             <DataTemplate DataType="{x:Type vm:BudgetsViewModel}"><v:BudgetsView/></DataTemplate>
             <DataTemplate DataType="{x:Type vm:LoansViewModel}"><v:LoansView/></DataTemplate>
             <DataTemplate DataType="{x:Type vm:BillsViewModel}"><v:BillsView/></DataTemplate>

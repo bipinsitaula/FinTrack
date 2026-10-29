@@ -56,6 +56,39 @@
         </StackPanel>
     </DataTemplate>
 
+    <!-- Income -->
+    <DataTemplate x:Key="IncomeForm">
+        <StackPanel>
+            <TextBlock Text="Choose where the money went. It is added to that account's balance and to Transactions." Style="{StaticResource FHint}"/>
+            <TextBlock Text="Amount (NPR)" Style="{StaticResource FL}"/>
+            <TextBox Text="{Binding Amount}" Style="{StaticResource FB}"/>
+            <TextBlock Text="Received into (bank, wallet or cash)" Style="{StaticResource FL}"/>
+            <ComboBox ItemsSource="{Binding Accounts}" SelectedItem="{Binding Account}" Style="{StaticResource FC}" Margin="0,0,0,4">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Name}"/>
+                            <TextBlock Text="{Binding TypeLabel, StringFormat='  ·  {0}'}" Style="{StaticResource Muted}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <TextBlock Style="{StaticResource Muted}" Margin="2,0,0,14" Text="{Binding Account.Balance, StringFormat='Current balance: NPR {0:N2}', FallbackValue=' ', TargetNullValue=' '}"/>
+            <UniformGrid Rows="1">
+                <StackPanel Margin="0,0,10,0">
+                    <TextBlock Text="Source" Style="{StaticResource FL}"/>
+                    <ComboBox ItemsSource="{Binding Categories}" SelectedItem="{Binding Category}" Style="{StaticResource FC}"/>
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock Text="Date (yyyy-mm-dd)" Style="{StaticResource FL}"/>
+                    <TextBox Text="{Binding Date, StringFormat='yyyy-MM-dd', UpdateSourceTrigger=LostFocus}" Style="{StaticResource FB}"/>
+                </StackPanel>
+            </UniformGrid>
+            <TextBlock Text="Note (optional)" Style="{StaticResource FL}"/>
+            <TextBox Text="{Binding Note}" Style="{StaticResource FB}"/>
+        </StackPanel>
+    </DataTemplate>
+
     <!-- Transactions: filters -->
     <DataTemplate x:Key="FilterForm">
         <StackPanel>
@@ -105,7 +138,7 @@
                             <ComboBox ItemsSource="{Binding DataContext.ExpenseCategories, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                       SelectedItem="{Binding Category}" Style="{StaticResource FC}" Margin="0,0,8,10"/>
                             <TextBox Grid.Column="1" Text="{Binding Amount}" Style="{StaticResource FB}" Margin="0,0,8,10"/>
-                            <Button Grid.Column="2" Content="✕" Style="{StaticResource Ghost}" Margin="0,0,0,10" Padding="10,8"
+                            <Button Grid.Column="2" Content="✕" Style="{StaticResource Danger}" Margin="0,0,0,10" Padding="10,8"
                                     Command="{Binding DataContext.RemoveLineCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                     CommandParameter="{Binding}"/>
                         </Grid>

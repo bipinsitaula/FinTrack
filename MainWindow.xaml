@@ -58,6 +58,10 @@
                         <RadioButton Style="{StaticResource Nav}" IsChecked="{Binding Page, Mode=TwoWay, Converter={StaticResource PageIs}, ConverterParameter=Transactions}">
                             <StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource Icon}" Text="&#xE8AB;" Width="30"/><TextBlock Text="Transactions"/></StackPanel>
                         </RadioButton>
+
+                        <RadioButton Style="{StaticResource Nav}" IsChecked="{Binding Page, Mode=TwoWay, Converter={StaticResource PageIs}, ConverterParameter=Income}">
+                            <StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource Icon}" Text="&#xE74B;" Width="30"/><TextBlock Text="Income"/></StackPanel>
+                        </RadioButton>
                         <RadioButton Style="{StaticResource Nav}" IsChecked="{Binding Page, Mode=TwoWay, Converter={StaticResource PageIs}, ConverterParameter=Budgets}">
                             <StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource Icon}" Text="&#xE9D9;" Width="30"/><TextBlock Text="Budgets"/></StackPanel>
                         </RadioButton>

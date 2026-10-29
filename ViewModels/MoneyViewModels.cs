@@ -45,6 +45,16 @@ public partial class AccountsViewModel : PageViewModel
         Assets = w.Assets; Liabilities = w.Liabilities; NetWorth = w.NetWorth;
     }
 
+    /// <summary>Opens the Income form with the selected account chosen, then refreshes the balances.</summary>
+    [RelayCommand]
+    private void AddMoney()
+    {
+        var income = new IncomeViewModel();
+        income.Preselect(Selected?.Id);
+        income.OpenAddCommand.Execute(null);
+        Load();
+    }
+
     [RelayCommand]
     private void OpenAddAccount()
     {
